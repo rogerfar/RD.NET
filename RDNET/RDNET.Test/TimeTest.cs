@@ -1,18 +1,19 @@
+using System;
 using System.Threading.Tasks;
 using Xunit;
 
 namespace RDNET.Test
 {
-    public class ApiTest
+    public class TimeTest
     {
         [Fact]
         public async Task Time()
         {
             var client = new RdNetClient();
 
-            var result = await client.TimeAsync();
+            var result = await client.GetTimeAsync();
 
-            Assert.NotNull(result);
+            Assert.InRange(result, DateTime.MinValue, DateTime.MaxValue);
         }
 
         [Fact]
@@ -20,9 +21,9 @@ namespace RDNET.Test
         {
             var client = new RdNetClient();
 
-            var result = await client.TimeIsoAsync();
+            var result = await client.GetIsoTimeAsync();
 
-            Assert.NotNull(result);
+            Assert.InRange(result, DateTimeOffset.MinValue, DateTimeOffset.MaxValue);
         }
     }
 }

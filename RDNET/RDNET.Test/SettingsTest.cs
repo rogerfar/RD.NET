@@ -8,9 +8,9 @@ namespace RDNET.Test
         [Fact]
         public async Task Settings()
         {
-            var client = new RdNetClient(Setup.APP_ID, Setup.APP_SECRET, Setup.DEVICE_CODE, Setup.CLIENT_ID, Setup.CLIENT_SECRET, Setup.ACCESS_TOKEN, Setup.REFRESH_TOKEN);
+            var client = new RdNetClient(Setup.APP_ID, Setup.DEVICE_CODE, Setup.CLIENT_ID, Setup.CLIENT_SECRET, Setup.ACCESS_TOKEN, Setup.REFRESH_TOKEN);
 
-            var result = await client.SettingsAsync();
+            var result = await client.GetSettingsAsync();
 
             Assert.Equal("secured", result.DownloadPort);
         }
@@ -18,25 +18,25 @@ namespace RDNET.Test
         [Fact]
         public async Task Update()
         {
-            var client = new RdNetClient(Setup.APP_ID, Setup.APP_SECRET, Setup.DEVICE_CODE, Setup.CLIENT_ID, Setup.CLIENT_SECRET, Setup.ACCESS_TOKEN, Setup.REFRESH_TOKEN);
+            var client = new RdNetClient(Setup.APP_ID, Setup.DEVICE_CODE, Setup.CLIENT_ID, Setup.CLIENT_SECRET, Setup.ACCESS_TOKEN, Setup.REFRESH_TOKEN);
 
-            await client.SettingsUpdateAsync("download_port", "secured");
+            await client.UpdateSettingsAsync("download_port", "secured");
         }
         
         [Fact]
         public async Task ConvertPoints()
         {
-            var client = new RdNetClient(Setup.APP_ID, Setup.APP_SECRET, Setup.DEVICE_CODE, Setup.CLIENT_ID, Setup.CLIENT_SECRET, Setup.ACCESS_TOKEN, Setup.REFRESH_TOKEN);
+            var client = new RdNetClient(Setup.APP_ID, Setup.DEVICE_CODE, Setup.CLIENT_ID, Setup.CLIENT_SECRET, Setup.ACCESS_TOKEN, Setup.REFRESH_TOKEN);
 
-            await client.SettingsConvertPointsAsync();
+            await client.ConvertPointsAsync();
         }
 
         [Fact]
         public async Task ChangePassword()
         {
-            var client = new RdNetClient(Setup.APP_ID, Setup.APP_SECRET, Setup.DEVICE_CODE, Setup.CLIENT_ID, Setup.CLIENT_SECRET, Setup.ACCESS_TOKEN, Setup.REFRESH_TOKEN);
+            var client = new RdNetClient(Setup.APP_ID, Setup.DEVICE_CODE, Setup.CLIENT_ID, Setup.CLIENT_SECRET, Setup.ACCESS_TOKEN, Setup.REFRESH_TOKEN);
 
-            await client.SettingsChangePasswordAsync();
+            await client.ChangePasswordAsync();
         }
     }
 }

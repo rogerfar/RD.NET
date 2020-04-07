@@ -1,7 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json;
 
-namespace RDNET.Models
+namespace RDNET
 {
     public class Traffic
     {

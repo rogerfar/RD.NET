@@ -17,4 +17,10 @@
     <ProjectReference Include="..\RDNET\RDNET.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="secret.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

@@ -5,7 +5,6 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using RDNET.Models;
 
 namespace RDNET
 {
@@ -14,7 +13,6 @@ namespace RDNET
         private const String BaseUrl = "https://api.real-debrid.com/rest/1.0/";
 
         private readonly String _appId;
-        private readonly String _appSecret;
 
         private readonly HttpClient _authClient;
         private readonly HttpClient _client;
@@ -25,10 +23,9 @@ namespace RDNET
         private String _accessToken;
         private String _refreshToken;
 
-        public RdNetClient(String appId = null, String appSecret = null, String deviceCode = null, String clientId = null, String clientSecret = null, String accessToken = null, String refreshToken = null)
+        public RdNetClient(String appId = null, String deviceCode = null, String clientId = null, String clientSecret = null, String accessToken = null, String refreshToken = null)
         {
             _appId = appId;
-            _appSecret = appSecret;
             _deviceCode = deviceCode;
             _clientId = clientId;
             _clientSecret = clientSecret;
@@ -47,7 +44,7 @@ namespace RDNET
         /// Authenticate the app with new credentials.
         /// </summary>
         /// <returns>An object with info how to have the user authenticate.</returns>
-        public async Task<AuthenticationDevice> DeviceAuthenticate()
+        public async Task<AuthenticationDevice> DeviceAuthenticateAsync()
         {
             var request = await _authClient.GetStringAsync($"device/code?client_id={_appId}&new_credentials=yes");
 
@@ -62,7 +59,7 @@ namespace RDNET
         /// Check if the user has entered their activation code
         /// </summary>
         /// <returns>True if the user has activated your app, false if they haven't yet.</returns>
-        public async Task<AuthenticationVerify> DeviceVerify(String deviceCode = null)
+        public async Task<AuthenticationVerify> DeviceVerifyAsync(String deviceCode = null)
         {
             if (String.IsNullOrWhiteSpace(deviceCode))
             {
@@ -90,7 +87,7 @@ namespace RDNET
         /// Get the tokens with the usercode
         /// </summary>
         /// <returns></returns>
-        public async Task<AuthenticationToken> Token(String clientId = null, String clientSecret = null, String deviceCode = null)
+        public async Task<AuthenticationToken> GetTokenAsync(String clientId = null, String clientSecret = null, String deviceCode = null)
         {
             if (String.IsNullOrWhiteSpace(clientId))
             {
@@ -136,7 +133,7 @@ namespace RDNET
         /// Refresh the access token based on the refresh token
         /// </summary>
         /// <returns></returns>
-        public async Task<AuthenticationToken> Refresh()
+        public async Task<AuthenticationToken> RefreshTokenAsync()
         {
             var data = new[]
             {
@@ -169,7 +166,7 @@ namespace RDNET
         /// Get server time, raw data returned. This request is not requiring authentication.
         /// </summary>
         /// <returns>DateTime with the current server time in UTC.</returns>
-        public async Task<DateTime> TimeAsync()
+        public async Task<DateTime> GetTimeAsync()
         {
             var result = await _client.GetStringAsync($"{BaseUrl}time");
 
@@ -180,7 +177,7 @@ namespace RDNET
         /// Get server time in ISO, raw data returned. This request is not requiring authentication.
         /// </summary>
         /// <returns>DateTimeOffset with the current server time with offset.</returns>
-        public async Task<DateTimeOffset> TimeIsoAsync()
+        public async Task<DateTimeOffset> GetIsoTimeAsync()
         {
             var result = await _client.GetStringAsync($"{BaseUrl}time/iso");
 
@@ -191,7 +188,7 @@ namespace RDNET
         /// Returns some informations on the current user.
         /// </summary>
         /// <returns>UserResponse</returns>
-        public async Task<User> UserAsync()
+        public async Task<User> GetUserAsync()
         {
             return await Get<User>("user");
         }
@@ -200,7 +197,7 @@ namespace RDNET
         /// Get traffic details on each hoster used during a defined period
         /// </summary>
         /// <returns></returns>
-        public async Task<Traffic> TrafficDetailsAsync(DateTime? start, DateTime? end)
+        public async Task<Traffic> GetTrafficDetailsAsync(DateTime? start, DateTime? end)
         {
             var parameters = "";
             if (start.HasValue)
@@ -219,7 +216,7 @@ namespace RDNET
         /// Get traffic informations for limited hosters (limits, current usage, extra packages).
         /// </summary>
         /// <returns></returns>
-        public async Task<Traffic> TrafficAsync()
+        public async Task<Traffic> GetTrafficAsync()
         {
             return await Get<Traffic>("traffic");
         }
@@ -280,7 +277,7 @@ namespace RDNET
         /// </summary>
         /// <param name="id">ID from /downloads or /unrestrict/link</param>
         /// <returns></returns>
-        public async Task<StreamingTranscode> StreamingTranscodeAsync(String id)
+        public async Task<StreamingTranscode> GetStreamingTranscodeAsync(String id)
         {
             return await Get<StreamingTranscode>($"streaming/transcode/{id}");
         }
@@ -290,7 +287,7 @@ namespace RDNET
         /// </summary>
         /// <param name="id">ID from /downloads or /unrestrict/link</param>
         /// <returns></returns>
-        public async Task<StreamingMediaInfo> StreamingMediaInfoAsync(String id)
+        public async Task<StreamingMediaInfo> GetStreamingMediaInfoAsync(String id)
         {
             return await Get<StreamingMediaInfo>($"streaming/mediaInfos/{id}");
         }
@@ -301,7 +298,7 @@ namespace RDNET
         /// <param name="offset">Starting offset</param>
         /// <param name="limit">Entries returned per page / request (must be within 0 and 100, default: 50)</param>
         /// <returns></returns>
-        public async Task<IList<Download>> DownloadAsync(Int32? offset = null, Int32? limit = 50)
+        public async Task<IList<Download>> GetDownloadsAsync(Int32? offset = null, Int32? limit = 50)
         {
             var parameters = "";
             if (offset > 0)
@@ -323,7 +320,7 @@ namespace RDNET
         /// </summary>
         /// <param name="id">The ID of the file in the download folder</param>
         /// <returns></returns>
-        public async Task DownloadDelete(String id)
+        public async Task DeleteDownloadAsync(String id)
         {
             await Delete($"downloads/delete/{id}");
         }
@@ -332,18 +329,19 @@ namespace RDNET
         /// Get supported hosts.
         /// </summary>
         /// <returns>A list of all supported hosts.</returns>
-        public async Task<IList<Host>> HostsAsync()
+        public async Task<IDictionary<String, Host>> GetHostsAsync()
         {
-            return await Get<IList<Host>>("hosts");
+            return await Get<IDictionary<String, Host>>("hosts");
         }
 
         /// <summary>
         /// Get status of supported hosters or not and their status on competitors.
         /// </summary>
         /// <returns></returns>
-        public async Task<IList<Host>> HostsStatusAsync()
+        public async Task<IDictionary<String, HostStatus>> GetHostsStatusAsync()
         {
-            return await Get<IList<Host>>("hosts/status");
+            // For some reason this API call doesn't like the Bearer token and needs the parameter.
+            return await Get<IDictionary<String, HostStatus>>($"hosts/status?auth_token={_accessToken}");
         }
 
         /// <summary>
@@ -351,7 +349,7 @@ namespace RDNET
         /// Does not require authentication.
         /// </summary>
         /// <returns></returns>
-        public async Task<IList<String>> HostsRegexAsync()
+        public async Task<IList<String>> GetHostsRegexAsync()
         {
             return await Get<IList<String>>("hosts/regex");
         }
@@ -361,7 +359,7 @@ namespace RDNET
         /// Does not require authentication.
         /// </summary>
         /// <returns></returns>
-        public async Task<IList<String>> HostsDomainsAsync()
+        public async Task<IList<String>> GetHostsDomainsAsync()
         {
             return await Get<IList<String>>("hosts/domains");
         }
@@ -370,7 +368,7 @@ namespace RDNET
         /// Get current user settings with possible values to update.
         /// </summary>
         /// <returns></returns>
-        public async Task<Settings> SettingsAsync()
+        public async Task<Settings> GetSettingsAsync()
         {
             return await Get<Settings>("settings");
         }
@@ -380,7 +378,7 @@ namespace RDNET
         /// </summary>
         /// <param name="settingName">"download_port", "locale", "streaming_language_preference", "streaming_quality", "mobile_streaming_quality", "streaming_cast_audio_preference"</param>
         /// <param name="settingValue">Possible values are available in /settings</param>
-        public async Task SettingsUpdateAsync(String settingName, String settingValue)
+        public async Task UpdateSettingsAsync(String settingName, String settingValue)
         {
             var data = new[]
             {
@@ -394,7 +392,7 @@ namespace RDNET
         /// <summary>
         /// Convert fidelity points.
         /// </summary>
-        public async Task SettingsConvertPointsAsync()
+        public async Task ConvertPointsAsync()
         {
             var data = new KeyValuePair<String, String>[0];
 
@@ -405,7 +403,7 @@ namespace RDNET
         /// Send the verification email to change the password.
         /// </summary>
         /// <returns></returns>
-        public async Task SettingsChangePasswordAsync()
+        public async Task ChangePasswordAsync()
         {
             var data = new KeyValuePair<String, String>[0];
 
@@ -419,7 +417,7 @@ namespace RDNET
         /// <param name="limit">Entries returned per page / request (must be within 0 and 100, default: 50)</param>
         /// <param name="filter">"active", list active torrents first</param>
         /// <returns></returns>
-        public async Task<IList<Torrent>> TorrentsAsync(Int32? offset = null, Int32? limit = 50, String filter = null)
+        public async Task<IList<Torrent>> GetTorrentsAsync(Int32? offset = null, Int32? limit = 50, String filter = null)
         {
             var parameters = "";
             if (offset > 0)
@@ -445,7 +443,7 @@ namespace RDNET
         /// </summary>
         /// <param name="id">The ID of the torrent</param>
         /// <returns></returns>
-        public async Task<Torrent> TorrentInfoAsync(String id)
+        public async Task<Torrent> GetTorrentInfoAsync(String id)
         {
             return await Get<Torrent>($"torrents/info/{id}");
         }
@@ -454,7 +452,7 @@ namespace RDNET
         /// Get currently active torrents number and the current maximum limit
         /// </summary>
         /// <returns></returns>
-        public async Task<TorrentActiveCount> TorrentActiveCountAsync()
+        public async Task<TorrentActiveCount> GetTorrentActiveCountAsync()
         {
             return await Get<TorrentActiveCount>("torrents/activeCount");
         }
@@ -463,7 +461,7 @@ namespace RDNET
         /// Get available hosts to upload the torrent to.
         /// </summary>
         /// <returns></returns>
-        public async Task<IList<TorrentHost>> TorrentAvailableHostsAsync()
+        public async Task<IList<TorrentHost>> GetAvailableTorrentHostsAsync()
         {
             return await Get<IList<TorrentHost>>("torrents/availableHosts");
         }
@@ -473,7 +471,7 @@ namespace RDNET
         /// </summary>
         /// <param name="file">The byte array of the file.</param>
         /// <returns></returns>
-        public async Task<TorrentAddResult> TorrentAddFile(Byte[] file)
+        public async Task<TorrentAddResult> AddTorrentFileAsync(Byte[] file)
         {
             return await Put<TorrentAddResult>("torrents/addTorrent", file);
         }
@@ -483,7 +481,7 @@ namespace RDNET
         /// </summary>
         /// <param name="magnet">Magnet link</param>
         /// <returns></returns>
-        public async Task<TorrentAddResult> TorrentAddMagnet(String magnet)
+        public async Task<TorrentAddResult> AddTorrentMagnetAsync(String magnet)
         {
             var data = new[]
             {
@@ -499,7 +497,7 @@ namespace RDNET
         /// <param name="id">The ID of the torrent</param>
         /// <param name="fileIds">Selected files IDs or "all"</param>
         /// <returns></returns>
-        public async Task TorrentSelectFiles(String id, params String[] fileIds)
+        public async Task SelectTorrentFilesAsync(String id, params String[] fileIds)
         {
             var files = String.Join(",", fileIds);
 
@@ -516,7 +514,7 @@ namespace RDNET
         /// </summary>
         /// <param name="id">The ID of the torrent</param>
         /// <returns></returns>
-        public async Task TorrentDelete(String id)
+        public async Task DeleteTorrentAsync(String id)
         {
             await Delete($"torrents/delete/{id}");
         }
@@ -537,7 +535,7 @@ namespace RDNET
 
             if (response.StatusCode == HttpStatusCode.Unauthorized)
             {
-                await Refresh();
+                await RefreshTokenAsync();
 
                 return await Get<T>(url, true);
             }
@@ -568,7 +566,7 @@ namespace RDNET
 
             if (response.StatusCode == HttpStatusCode.Unauthorized)
             {
-                await Refresh();
+                await RefreshTokenAsync();
 
                 await Post(url, data, true);
 
@@ -599,7 +597,7 @@ namespace RDNET
 
             if (response.StatusCode == HttpStatusCode.Unauthorized)
             {
-                await Refresh();
+                await RefreshTokenAsync();
 
                 return await Post<T>(url, data, true);
             }
@@ -630,7 +628,7 @@ namespace RDNET
 
             if (response.StatusCode == HttpStatusCode.Unauthorized)
             {
-                await Refresh();
+                await RefreshTokenAsync();
 
                 return await Put<T>(url, file, true);
             }
@@ -659,7 +657,7 @@ namespace RDNET
 
             if (response.StatusCode == HttpStatusCode.Unauthorized)
             {
-                await Refresh();
+                await RefreshTokenAsync();
 
                 await Delete(url, true);
 

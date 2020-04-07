@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace RDNET.Models
+namespace RDNET
 {
     public class StreamingMediaInfo
     {
@@ -117,22 +118,16 @@ namespace RDNET.Models
     public class Details
     {
         [JsonProperty("video")]
-        public Video Video { get; set; }
+        public IDictionary<String, Video> Video { get; set; }
 
         [JsonProperty("audio")]
-        public Audio Audio { get; set; }
+        public IDictionary<String, Audio> Audio { get; set; }
 
         [JsonProperty("subtitles")]
-        public Subtitle Subtitles { get; set; }
+        public IList<IDictionary<String, Subtitle>> Subtitles { get; set; }
     }
-
+    
     public class Subtitle
-    {
-        [JsonProperty("und1")]
-        public SubtitleUnd Und1 { get; set; }
-    }
-
-    public class SubtitleUnd
     {
         [JsonProperty("stream")]
         public String Stream { get; set; }
@@ -155,14 +150,8 @@ namespace RDNET.Models
         [JsonProperty("type")]
         public String Type { get; set; }
     }
-
+    
     public class Audio
-    {
-        [JsonProperty("und1")]
-        public AudioUnd Und1 { get; set; }
-    }
-
-    public class AudioUnd
     {
         [JsonProperty("stream")]
         public String Stream { get; set; }
@@ -197,14 +186,8 @@ namespace RDNET.Models
         [JsonProperty("channels")]
         public Int64 Channels { get; set; }
     }
-
+    
     public class Video
-    {
-        [JsonProperty("und1")]
-        public VideoUnd Und1 { get; set; }
-    }
-
-    public class VideoUnd
     {
         /// <summary>
         /// Stream URL

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace RDNET.Models
+namespace RDNET
 {
     public class Settings
     {

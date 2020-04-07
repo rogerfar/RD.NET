@@ -8,9 +8,9 @@ namespace RDNET.Test
         [Fact]
         public async Task Authenticate()
         {
-            var client = new RdNetClient(Setup.APP_ID, Setup.APP_SECRET);
+            var client = new RdNetClient(Setup.APP_ID);
 
-            var result = await client.DeviceAuthenticate();
+            var result = await client.DeviceAuthenticateAsync();
 
             Assert.Equal(5, result.Interval);
         }
@@ -18,9 +18,9 @@ namespace RDNET.Test
         [Fact]
         public async Task VerifyActivation()
         {
-            var client = new RdNetClient(Setup.APP_ID, Setup.APP_SECRET);
+            var client = new RdNetClient(Setup.APP_ID);
 
-            var result = await client.DeviceVerify(Setup.DEVICE_CODE);
+            var result = await client.DeviceVerifyAsync(Setup.DEVICE_CODE);
 
             Assert.Null(result.ClientId);
         }
@@ -28,9 +28,9 @@ namespace RDNET.Test
         [Fact]
         public async Task Token()
         {
-            var client = new RdNetClient(Setup.APP_ID, Setup.APP_SECRET);
+            var client = new RdNetClient(Setup.APP_ID);
 
-            var result = await client.Token(Setup.CLIENT_ID, Setup.CLIENT_SECRET, Setup.DEVICE_CODE);
+            var result = await client.GetTokenAsync(Setup.CLIENT_ID, Setup.CLIENT_SECRET, Setup.DEVICE_CODE);
 
             Assert.Equal("Bearer", result.TokenType);
         }
@@ -38,9 +38,9 @@ namespace RDNET.Test
         [Fact]
         public async Task Refresh()
         {
-            var client = new RdNetClient(Setup.APP_ID, Setup.APP_SECRET);
+            var client = new RdNetClient(Setup.APP_ID);
 
-            var result = await client.Refresh();
+            var result = await client.RefreshTokenAsync();
 
             Assert.Equal("Bearer", result.TokenType);
         }
