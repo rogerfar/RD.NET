@@ -2,6 +2,16 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Roger Far</Authors>
+    <Product>RD.NET</Product>
+    <Description>A Read-Debrid API proxy for .NET Standard.</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageId>RD.NET</PackageId>
+    <PackageProjectUrl>https://github.com/rogerfar/RD.NET</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/rogerfar/RD.NET</RepositoryUrl>
+    <RepositoryType>GitHub</RepositoryType>
+    <PackageTags>RealDebrid Real-Debrid</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
