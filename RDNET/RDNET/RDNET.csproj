@@ -12,6 +12,7 @@
     <RepositoryUrl>https://github.com/rogerfar/RD.NET</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
     <PackageTags>RealDebrid Real-Debrid</PackageTags>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
