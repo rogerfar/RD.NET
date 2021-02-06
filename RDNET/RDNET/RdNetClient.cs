@@ -490,6 +490,16 @@ namespace RDNET
 
             return await Post<TorrentAddResult>("torrents/addMagnet", data);
         }
+        
+        /// <summary>
+        /// Get the files available on RD for the given torrent
+        /// </summary>
+        /// <param name="id">The ID of the torrent</param>
+        /// <returns></returns>
+        public async Task<Dictionary<String, Dictionary<String, List<Dictionary<String, TorrentInstantAvailabilityFile>>>>> GetAvailableFiles(String id)
+        {
+            return await Get<Dictionary<String, Dictionary<String, List<Dictionary<String, TorrentInstantAvailabilityFile>>>>>($"torrents/instantAvailability/{id}");
+        }
 
         /// <summary>
         /// Select files of a torrent to start it
