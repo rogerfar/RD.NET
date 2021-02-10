@@ -62,11 +62,19 @@ namespace RDNET.Test
         }
 
         [Fact]
-        public async Task GetAvailableFiles()
+        public async Task GetAvailableFiles1()
         {
             var client = new RdNetClient(Setup.APP_ID, Setup.DEVICE_CODE, Setup.CLIENT_ID, Setup.CLIENT_SECRET, Setup.ACCESS_TOKEN, Setup.REFRESH_TOKEN);
 
             var result = await client.GetAvailableFiles("dd8255ecdc7ca55fb0bbf81323d87062db1f6d1c");
+        }
+
+        [Fact]
+        public async Task GetAvailableFiles2()
+        {
+            var client = new RdNetClient(Setup.APP_ID, Setup.DEVICE_CODE, Setup.CLIENT_ID, Setup.CLIENT_SECRET, Setup.ACCESS_TOKEN, Setup.REFRESH_TOKEN);
+
+            var result = await client.GetAvailableFiles("F20C3936C1DC57BB832929F3C9537C86BF41C13A");
         }
 
         [Fact]

@@ -1,0 +1,7 @@
+﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=eaa3e737_002Dedf0_002D40f7_002D9c42_002Db87366bbb98f/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="GetAvailableFiles" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;xUnit::D26FAE24-95A5-4E5C-9D90-AA185CEF7B01::.NETCoreApp,Version=v3.1::RDNET.Test.TorrentsTest.GetAvailableFiles1&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::D26FAE24-95A5-4E5C-9D90-AA185CEF7B01::.NETCoreApp,Version=v3.1::RDNET.Test.TorrentsTest.GetAvailableFiles2&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

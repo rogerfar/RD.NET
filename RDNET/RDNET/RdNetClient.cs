@@ -498,7 +498,14 @@ namespace RDNET
         /// <returns></returns>
         public async Task<Dictionary<String, Dictionary<String, List<Dictionary<String, TorrentInstantAvailabilityFile>>>>> GetAvailableFiles(String id)
         {
-            return await Get<Dictionary<String, Dictionary<String, List<Dictionary<String, TorrentInstantAvailabilityFile>>>>>($"torrents/instantAvailability/{id}");
+            try
+            {
+                return await Get<Dictionary<String, Dictionary<String, List<Dictionary<String, TorrentInstantAvailabilityFile>>>>>($"torrents/instantAvailability/{id}");
+            }
+            catch (JsonSerializationException)
+            {
+                return new Dictionary<String, Dictionary<String, List<Dictionary<String, TorrentInstantAvailabilityFile>>>>();
+            }
         }
 
         /// <summary>
