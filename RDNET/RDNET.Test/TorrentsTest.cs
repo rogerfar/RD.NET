@@ -66,7 +66,7 @@ namespace RDNET.Test
         {
             var client = new RdNetClient(Setup.APP_ID, Setup.DEVICE_CODE, Setup.CLIENT_ID, Setup.CLIENT_SECRET, Setup.ACCESS_TOKEN, Setup.REFRESH_TOKEN);
 
-            var result = await client.GetAvailableFiles("dd8255ecdc7ca55fb0bbf81323d87062db1f6d1c");
+            var result = await client.GetAvailableFiles("935AF113467175D2117064B77A4DE4A7DE89C089");
         }
 
         [Fact]

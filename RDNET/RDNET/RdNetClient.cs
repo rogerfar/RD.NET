@@ -562,7 +562,15 @@ namespace RDNET
                 throw new Exception(text);
             }
 
-            return JsonConvert.DeserializeObject<T>(text);
+            try
+            {
+                return JsonConvert.DeserializeObject<T>(text);
+            }
+            catch (Exception ex)
+            {
+                var typeName = typeof(T).Name;
+                throw new Exception($"Unable to deserialze Real Debrid API response to {typeName}. Response was: {text}", ex);
+            }
         }
 
         private async Task Post(String url, KeyValuePair<String, String>[] data, Boolean repeatRequest = false)
