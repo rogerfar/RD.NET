@@ -566,6 +566,10 @@ namespace RDNET
             {
                 return JsonConvert.DeserializeObject<T>(text);
             }
+            catch (JsonSerializationException)
+            {
+                throw;
+            }
             catch (Exception ex)
             {
                 var typeName = typeof(T).Name;
