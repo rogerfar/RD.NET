@@ -2,3 +2,4 @@ RDNET/.vs
 **/bin
 **/obj
 RDNET/RDNET.Test/secret.txt
+RDNET/publish.bat
