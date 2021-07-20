@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace RDNET
@@ -16,5 +17,11 @@ namespace RDNET
         /// </summary>
         [JsonProperty("limit")]
         public Int32 Limit { get; set; }
+
+        /// <summary>
+        /// List of active torrent hashes.
+        /// </summary>
+        [JsonProperty("list")]
+        public IList<String> List { get; set; }
     }
 }

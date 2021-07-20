@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
+using RDNET.Exceptions;
 using Xunit;
 
 namespace RDNET.Test
@@ -8,41 +10,51 @@ namespace RDNET.Test
         [Fact]
         public async Task Authenticate()
         {
-            var client = new RdNetClient(Setup.APP_ID);
+            var client = new RdNetClient();
+            client.UseOAuthAuthentication();
 
-            var result = await client.DeviceAuthenticateAsync();
+            var result = await client.Authentication.GetDeviceAuthorizeRequestAsync();
+
+            await Task.Delay(5000);
+
+            var result2 = await client.Authentication.VerifyDeviceAuthentication();
 
             Assert.Equal(5, result.Interval);
+            Assert.NotNull(result2.ClientId);
         }
-
+        
         [Fact]
-        public async Task VerifyActivation()
+        public async Task OAuthResponse()
         {
-            var client = new RdNetClient(Setup.APP_ID);
+            var client = new RdNetClient();
+            client.UseOAuthAuthentication();
 
-            var result = await client.DeviceVerifyAsync(Setup.DEVICE_CODE);
-
-            Assert.Null(result.ClientId);
-        }
-
-        [Fact]
-        public async Task Token()
-        {
-            var client = new RdNetClient(Setup.APP_ID);
-
-            var result = await client.GetTokenAsync(Setup.CLIENT_ID, Setup.CLIENT_SECRET, Setup.DEVICE_CODE);
+            var result = await client.Authentication.GetOAuthAuthorizationTokensAsync("", "");
 
             Assert.Equal("Bearer", result.TokenType);
         }
-
+        
         [Fact]
-        public async Task Refresh()
+        public async Task RefreshToken()
         {
-            var client = new RdNetClient(Setup.APP_ID);
+            var client = new RdNetClient();
+            client.UseOAuthAuthentication("", "", "", "");
 
-            var result = await client.RefreshTokenAsync();
-
-            Assert.Equal("Bearer", result.TokenType);
+            try
+            {
+                var result = await client.User.GetAsync();
+            }
+            catch (AccessTokenExpired)
+            {
+                var newCredentials = await client.Authentication.RefreshTokenAsync();
+            }
+        }
+        
+        [Fact]
+        public void OAuthRedirectUrl()
+        {
+            var client = new RdNetClient();
+            var result = client.Authentication.GetOAuthAuthorizationUrl(new Uri("http://www.google.com"), "Test");
         }
     }
 }

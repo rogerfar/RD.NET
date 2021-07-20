@@ -8,19 +8,21 @@ namespace RDNET.Test
         [Fact]
         public async Task Transcode()
         {
-            var client = new RdNetClient(Setup.APP_ID, Setup.DEVICE_CODE, Setup.CLIENT_ID, Setup.CLIENT_SECRET, Setup.ACCESS_TOKEN, Setup.REFRESH_TOKEN);
+            var client = new RdNetClient();
+            client.UseApiAuthentication(Setup.API_KEY);
 
-            var result = await client.GetStreamingTranscodeAsync("YGNKHDGOP4X4C4");
+            var result = await client.Streaming.GetTranscodeAsync("XFQVPHIWPXRZS");
 
-            Assert.NotNull(result.H264WebM.Full);
+            Assert.Equal(4, result.Count);
         }
 
         [Fact]
         public async Task MediaInfo()
         {
-            var client = new RdNetClient(Setup.APP_ID, Setup.DEVICE_CODE, Setup.CLIENT_ID, Setup.CLIENT_SECRET, Setup.ACCESS_TOKEN, Setup.REFRESH_TOKEN);
+            var client = new RdNetClient();
+            client.UseApiAuthentication(Setup.API_KEY);
 
-            var result = await client.GetStreamingMediaInfoAsync("YGNKHDGOP4X4C4");
+            var result = await client.Streaming.GetMediaInfoAsync("XFQVPHIWPXRZS");
 
             Assert.NotNull(result.Filename);
         }

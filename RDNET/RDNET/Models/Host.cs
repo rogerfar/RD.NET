@@ -6,25 +6,25 @@ namespace RDNET
     public class Host
     {
         /// <summary>
-        /// ID of the host
+        ///     ID of the host.
         /// </summary>
         [JsonProperty("id")]
         public String Id { get; set; }
 
         /// <summary>
-        /// Name of the host
+        ///     Name of the host.
         /// </summary>
         [JsonProperty("name")]
         public String Name { get; set; }
 
         /// <summary>
-        /// Image of the host
+        ///     Image of the host.
         /// </summary>
         [JsonProperty("image")]
         public String Image { get; set; }
 
         /// <summary>
-        /// Image of the host (but bigger)
+        ///     Image of the host (but bigger).
         /// </summary>
         [JsonProperty("image_big")]
         public String ImageBig { get; set; }

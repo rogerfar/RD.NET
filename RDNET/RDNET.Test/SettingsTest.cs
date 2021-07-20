@@ -8,9 +8,10 @@ namespace RDNET.Test
         [Fact]
         public async Task Settings()
         {
-            var client = new RdNetClient(Setup.APP_ID, Setup.DEVICE_CODE, Setup.CLIENT_ID, Setup.CLIENT_SECRET, Setup.ACCESS_TOKEN, Setup.REFRESH_TOKEN);
+            var client = new RdNetClient();
+            client.UseApiAuthentication(Setup.API_KEY);
 
-            var result = await client.GetSettingsAsync();
+            var result = await client.Settings.GetAsync();
 
             Assert.Equal("secured", result.DownloadPort);
         }
@@ -18,25 +19,10 @@ namespace RDNET.Test
         [Fact]
         public async Task Update()
         {
-            var client = new RdNetClient(Setup.APP_ID, Setup.DEVICE_CODE, Setup.CLIENT_ID, Setup.CLIENT_SECRET, Setup.ACCESS_TOKEN, Setup.REFRESH_TOKEN);
+            var client = new RdNetClient();
+            client.UseApiAuthentication(Setup.API_KEY);
 
-            await client.UpdateSettingsAsync("download_port", "secured");
-        }
-        
-        [Fact]
-        public async Task ConvertPoints()
-        {
-            var client = new RdNetClient(Setup.APP_ID, Setup.DEVICE_CODE, Setup.CLIENT_ID, Setup.CLIENT_SECRET, Setup.ACCESS_TOKEN, Setup.REFRESH_TOKEN);
-
-            await client.ConvertPointsAsync();
-        }
-
-        [Fact]
-        public async Task ChangePassword()
-        {
-            var client = new RdNetClient(Setup.APP_ID, Setup.DEVICE_CODE, Setup.CLIENT_ID, Setup.CLIENT_SECRET, Setup.ACCESS_TOKEN, Setup.REFRESH_TOKEN);
-
-            await client.ChangePasswordAsync();
+            await client.Settings.UpdateAsync("download_port", "secured");
         }
     }
 }

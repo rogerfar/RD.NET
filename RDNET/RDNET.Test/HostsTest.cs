@@ -8,9 +8,10 @@ namespace RDNET.Test
         [Fact]
         public async Task Hosts()
         {
-            var client = new RdNetClient(Setup.APP_ID, Setup.DEVICE_CODE, Setup.CLIENT_ID, Setup.CLIENT_SECRET, Setup.ACCESS_TOKEN, Setup.REFRESH_TOKEN);
+            var client = new RdNetClient();
+            client.UseApiAuthentication(Setup.API_KEY);
 
-            var result = await client.GetHostsAsync();
+            var result = await client.Hosts.GetAsync();
 
             Assert.True(result.Count > 50);
         }
@@ -18,9 +19,10 @@ namespace RDNET.Test
         [Fact]
         public async Task Status()
         {
-            var client = new RdNetClient(Setup.APP_ID, Setup.DEVICE_CODE, Setup.CLIENT_ID, Setup.CLIENT_SECRET, Setup.ACCESS_TOKEN, Setup.REFRESH_TOKEN);
+            var client = new RdNetClient();
+            client.UseApiAuthentication(Setup.API_KEY);
 
-            var result = await client.GetHostsStatusAsync();
+            var result = await client.Hosts.GetStatusAsync();
 
             Assert.True(result.Count > 50);
         }
@@ -28,19 +30,32 @@ namespace RDNET.Test
         [Fact]
         public async Task Regex()
         {
-            var client = new RdNetClient(Setup.APP_ID, Setup.DEVICE_CODE, Setup.CLIENT_ID, Setup.CLIENT_SECRET, Setup.ACCESS_TOKEN, Setup.REFRESH_TOKEN);
+            var client = new RdNetClient();
+            client.UseApiAuthentication(Setup.API_KEY);
 
-            var result = await client.GetHostsRegexAsync();
+            var result = await client.Hosts.GetRegexAsync();
 
             Assert.True(result.Count > 150);
         }
         
         [Fact]
+        public async Task RegexFolder()
+        {
+            var client = new RdNetClient();
+            client.UseApiAuthentication(Setup.API_KEY);
+
+            var result = await client.Hosts.GetRegexFolderAsync();
+
+            Assert.True(result.Count > 20);
+        }
+
+        [Fact]
         public async Task Domains()
         {
-            var client = new RdNetClient(Setup.APP_ID, Setup.DEVICE_CODE, Setup.CLIENT_ID, Setup.CLIENT_SECRET, Setup.ACCESS_TOKEN, Setup.REFRESH_TOKEN);
+            var client = new RdNetClient();
+            client.UseApiAuthentication(Setup.API_KEY);
 
-            var result = await client.GetHostsDomainsAsync();
+            var result = await client.Hosts.GetDomainsAsync();
 
             Assert.True(result.Count > 100);
         }

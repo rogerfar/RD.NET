@@ -9,21 +9,26 @@ namespace RDNET.Test
         [Fact]
         public async Task Traffic()
         {
-            var client = new RdNetClient(Setup.APP_ID, Setup.DEVICE_CODE, Setup.CLIENT_ID, Setup.CLIENT_SECRET, Setup.ACCESS_TOKEN, Setup.REFRESH_TOKEN);
+            var client = new RdNetClient();
+            client.UseApiAuthentication(Setup.API_KEY);
 
-            var result = await client.GetTrafficAsync();
+            var result = await client.Traffic.GetAsync();
+
+            Assert.NotEmpty(result);
         }
 
         [Fact]
         public async Task TrafficDetails()
         {
-            var client = new RdNetClient(Setup.APP_ID, Setup.DEVICE_CODE, Setup.CLIENT_ID, Setup.CLIENT_SECRET, Setup.ACCESS_TOKEN, Setup.REFRESH_TOKEN);
+            var client = new RdNetClient();
+            client.UseApiAuthentication(Setup.API_KEY);
 
-            var start = DateTime.Now.AddDays(-25);
-            var end = DateTime.Now.AddDays(-20);
+            var start = DateTime.Now.AddMonths(-2);
+            var end = DateTime.Now.AddMonths(-1);
 
-            var result = await client.GetTrafficDetailsAsync(start, end);
+            var result = await client.Traffic.GetDetailsAsync(start, end);
 
+            Assert.NotEmpty(result);
         }
     }
 }
