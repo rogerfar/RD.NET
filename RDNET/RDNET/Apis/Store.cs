@@ -9,6 +9,7 @@ namespace RDNET.Apis
         public String ApiUrl = "https://api.real-debrid.com/rest/1.0/";
 
         public String AppId;
+        public Int32 RetryCount { get; set; }
 
         public AuthenticationType AuthenticationType;
 

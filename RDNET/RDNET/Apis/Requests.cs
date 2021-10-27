@@ -38,55 +38,77 @@ namespace RDNET.Apis
                 _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {_store.BearerToken}");
             }
 
-            var response = requestType switch
+            var retryCount = 0;
+            while (true)
             {
-                RequestType.Get => await _httpClient.GetAsync($"{baseUrl}{url}", cancellationToken),
-                RequestType.Post => await _httpClient.PostAsync($"{baseUrl}{url}", data, cancellationToken),
-                RequestType.Put => await _httpClient.PutAsync($"{baseUrl}{url}", data, cancellationToken),
-                RequestType.Delete => await _httpClient.DeleteAsync($"{baseUrl}{url}", cancellationToken),
-                _ => throw new ArgumentOutOfRangeException(nameof(requestType), requestType, null)
-            };
-
-            var buffer = await response.Content.ReadAsByteArrayAsync();
-            var text = Encoding.UTF8.GetString(buffer, 0, buffer.Length);
-            
-            if (response.StatusCode == HttpStatusCode.Unauthorized && requireAuthentication && _store.AuthenticationType == AuthenticationType.OAuth2)
-            {
-                var realDebridException = ParseRealDebridException(text);
-
-                if (realDebridException?.ErrorCode == 8)
+                try
                 {
-                    throw new AccessTokenExpired();
+                    var response = requestType switch
+                    {
+                        RequestType.Get => await _httpClient.GetAsync($"{baseUrl}{url}", cancellationToken),
+                        RequestType.Post => await _httpClient.PostAsync($"{baseUrl}{url}", data, cancellationToken),
+                        RequestType.Put => await _httpClient.PutAsync($"{baseUrl}{url}", data, cancellationToken),
+                        RequestType.Delete => await _httpClient.DeleteAsync($"{baseUrl}{url}", cancellationToken),
+                        _ => throw new ArgumentOutOfRangeException(nameof(requestType), requestType, null)
+                    };
+
+                    var buffer = await response.Content.ReadAsByteArrayAsync();
+                    var text = Encoding.UTF8.GetString(buffer, 0, buffer.Length);
+
+                    if (response.StatusCode == HttpStatusCode.Unauthorized && requireAuthentication && _store.AuthenticationType == AuthenticationType.OAuth2)
+                    {
+                        var realDebridException = ParseRealDebridException(text);
+
+                        if (realDebridException?.ErrorCode == 8)
+                        {
+                            throw new AccessTokenExpired();
+                        }
+                    }
+
+                    if (response.StatusCode == HttpStatusCode.NoContent)
+                    {
+                        text = null;
+                    }
+
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        var realDebridException = ParseRealDebridException(text);
+
+                        if (realDebridException != null)
+                        {
+                            throw realDebridException;
+                        }
+
+                        throw new Exception(text);
+                    }
+
+                    if (headerOutput != null)
+                    {
+                        response.Headers.TryGetValues(headerOutput, out var headerValues);
+
+                        var headerValue = headerValues?.FirstOrDefault();
+
+                        return (text, headerValue);
+                    }
+
+                    return (text, null);
+                }
+                catch (RealDebridException)
+                {
+                    throw;
+                }
+                catch
+                {
+                    if (retryCount >= _store.RetryCount)
+                    {
+                        throw;
+                    }
+
+                    retryCount++;
+
+                    await Task.Delay(1000 * retryCount, cancellationToken);
                 }
             }
-
-            if (response.StatusCode == HttpStatusCode.NoContent)
-            {
-                text = null;
-            }
-
-            if (!response.IsSuccessStatusCode)
-            {
-                var realDebridException = ParseRealDebridException(text);
-
-                if (realDebridException != null)
-                {
-                    throw realDebridException;
-                }
-
-                throw new Exception(text);
-            }
-
-            if (headerOutput != null)
-            {
-                response.Headers.TryGetValues(headerOutput, out var headerValues);
-
-                var headerValue = headerValues?.FirstOrDefault();
-
-                return (text, headerValue);
-            }
-
-            return (text, null);
         }
         
         private async Task<T> Request<T>(String baseUrl,

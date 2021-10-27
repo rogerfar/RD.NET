@@ -36,9 +36,13 @@ namespace RDNET
         /// <param name="httpClient">
         ///     Optional HttpClient if you want to use your own HttpClient.
         /// </param>
-        public RdNetClient(String appId = null, HttpClient httpClient = null)
+        /// <param name="retryCount">
+        ///     The API will retry this many times before failing.
+        /// </param>
+        public RdNetClient(String appId = null, HttpClient httpClient = null, Int32 retryCount = 1)
         {
             _store.AppId= appId ?? "X245A4XAIBGVM";
+            _store.RetryCount = retryCount;
 
             var client = httpClient ?? new HttpClient();
 
