@@ -130,6 +130,10 @@ namespace RDNET.Apis
             {
                 return JsonConvert.DeserializeObject<T>(result);
             }
+            catch (JsonSerializationException ex)
+            {
+                throw new JsonSerializationException($"Unable to deserialize Real Debrid API response to {typeof(T).Name}. Response was: {result}", ex);
+            }
             catch (Exception ex)
             {
                 throw new Exception($"Unable to deserialize Real Debrid API response to {typeof(T).Name}. Response was: {result}", ex);

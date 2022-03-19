@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using RDNET.Helpers;
-using AvailableFiles =
-    System.Collections.Generic.Dictionary<System.String, System.Collections.Generic.Dictionary<System.String,
-        System.Collections.Generic.List<System.Collections.Generic.Dictionary<System.String, RDNET.TorrentInstantAvailabilityFile>>>>;
+using AvailableFiles = System.Collections.Generic.Dictionary<System.String, System.Collections.Generic.Dictionary<System.String,
+    System.Collections.Generic.List<System.Collections.Generic.Dictionary<System.String, RDNET.TorrentInstantAvailabilityFile>>>>;
+using AvailableFiles2 = System.Collections.Generic.Dictionary<System.String, System.Collections.Generic.List<System.Collections.Generic.Dictionary<System.String, RDNET.TorrentInstantAvailabilityFile>>>;
 
 namespace RDNET.Apis
 {
@@ -147,6 +148,18 @@ namespace RDNET.Apis
                 return await _requests.GetRequestAsync<AvailableFiles>($"torrents/instantAvailability/{id}", true, cancellationToken);
             }
             catch (JsonSerializationException)
+            {
+                var result = await _requests.GetRequestAsync<AvailableFiles2>($"torrents/instantAvailability/{id}", true, cancellationToken);
+
+                return result.ToDictionary(r => r.Key,
+                                           r => new Dictionary<String, List<Dictionary<String, TorrentInstantAvailabilityFile>>>
+                                           {
+                                               {
+                                                   "rd", r.Value
+                                               }
+                                           });
+            }
+            catch
             {
                 return new AvailableFiles();
             }

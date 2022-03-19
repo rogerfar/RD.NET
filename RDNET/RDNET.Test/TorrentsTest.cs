@@ -119,6 +119,15 @@ namespace RDNET.Test
         }
 
         [Fact]
+        public async Task GetAvailableFilesBroken()
+        {
+            var client = new RdNetClient();
+            client.UseApiAuthentication(Setup.API_KEY);
+
+            var result = await client.Torrents.GetAvailableFiles("8EB17E22D70287B7013115A191305913CB2B2165");
+        }
+
+        [Fact]
         public async Task SelectFiles()
         {
             var client = new RdNetClient();
