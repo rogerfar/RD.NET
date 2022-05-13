@@ -1,5 +1,5 @@
-RDNET/.vs
+.vs
 **/bin
 **/obj
-RDNET/RDNET.Test/secret.txt
-RDNET/publish.bat
+RDNET.Test/secret.txt
+publish.bat
