@@ -1,61 +1,55 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Collections.Specialized;
 using RDNET.Helpers;
 
-namespace RDNET.Apis
+namespace RDNET.Apis;
+
+public class TrafficApi
 {
-    public class TrafficApi
+    private readonly Requests _requests;
+
+    internal TrafficApi(HttpClient httpClient, Store store)
     {
-        private readonly Requests _requests;
+        _requests = new Requests(httpClient, store);
+    }
 
-        internal TrafficApi(HttpClient httpClient, Store store)
+    /// <summary>
+    ///     Get traffic informations for limited hosters (limits, current usage, extra packages).
+    /// </summary>
+    /// <param name="cancellationToken">
+    ///     A cancellation token that can be used by other objects or threads to receive notice of
+    ///     cancellation.
+    /// </param>
+    /// <returns></returns>
+    public async Task<Dictionary<String, TrafficRemote>> GetAsync(CancellationToken cancellationToken = default)
+    {
+        return await _requests.GetRequestAsync<Dictionary<String, TrafficRemote>>("traffic", true, cancellationToken);
+    }
+
+    /// <summary>
+    ///     Get traffic details on each hoster used during a defined period.
+    ///     Warning: The period can not exceed 31 days.
+    /// </summary>
+    /// <param name="start">Start period, default: a week ago</param>
+    /// <param name="end">End period, default: today (This parameter does not seem to work!)</param>
+    /// <param name="cancellationToken">
+    ///     A cancellation token that can be used by other objects or threads to receive notice of
+    ///     cancellation.
+    /// </param>
+    /// <returns></returns>
+    public async Task<Dictionary<DateTime, TrafficDetail>> GetDetailsAsync(DateTime? start, DateTime? end, CancellationToken cancellationToken = default)
+    {
+        var parameters = new NameValueCollection();
+
+        if (start.HasValue)
         {
-            _requests = new Requests(httpClient, store);
+            parameters.Add("start", start.Value.ToString("yyyy-MM-dd"));
         }
 
-        /// <summary>
-        ///     Get traffic informations for limited hosters (limits, current usage, extra packages).
-        /// </summary>
-        /// <param name="cancellationToken">
-        ///     A cancellation token that can be used by other objects or threads to receive notice of
-        ///     cancellation.
-        /// </param>
-        /// <returns></returns>
-        public async Task<Dictionary<String, TrafficRemote>> GetAsync(CancellationToken cancellationToken = default)
+        if (end.HasValue)
         {
-            return await _requests.GetRequestAsync<Dictionary<String, TrafficRemote>>("traffic", true, cancellationToken);
+            parameters.Add("end", end.Value.ToString("yyyy-MM-dd"));
         }
 
-        /// <summary>
-        ///     Get traffic details on each hoster used during a defined period.
-        ///     Warning: The period can not exceed 31 days.
-        /// </summary>
-        /// <param name="start">Start period, default: a week ago</param>
-        /// <param name="end">End period, default: today (This parameter does not seem to work!)</param>
-        /// <param name="cancellationToken">
-        ///     A cancellation token that can be used by other objects or threads to receive notice of
-        ///     cancellation.
-        /// </param>
-        /// <returns></returns>
-        public async Task<Dictionary<DateTime, TrafficDetail>> GetDetailsAsync(DateTime? start, DateTime? end, CancellationToken cancellationToken = default)
-        {
-            var parameters = new NameValueCollection();
-
-            if (start.HasValue)
-            {
-                parameters.Add("start", start.Value.ToString("yyyy-MM-dd"));
-            }
-
-            if (end.HasValue)
-            {
-                parameters.Add("end", end.Value.ToString("yyyy-MM-dd"));
-            }
-
-            return await _requests.GetRequestAsync<Dictionary<DateTime, TrafficDetail>>($"traffic/details{parameters.ToQueryString()}", true, cancellationToken);
-        }
+        return await _requests.GetRequestAsync<Dictionary<DateTime, TrafficDetail>>($"traffic/details{parameters.ToQueryString()}", true, cancellationToken);
     }
 }

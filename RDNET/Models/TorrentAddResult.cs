@@ -1,20 +1,18 @@
-﻿using System;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
-namespace RDNET
+namespace RDNET;
+
+public class TorrentAddResult
 {
-    public class TorrentAddResult
-    {
-        /// <summary>
-        ///     The ID of the torrent.
-        /// </summary>
-        [JsonProperty("id")]
-        public String Id { get; set; }
+    /// <summary>
+    ///     The ID of the torrent.
+    /// </summary>
+    [JsonProperty("id")]
+    public String Id { get; set; } = null!;
 
-        /// <summary>
-        ///     The URL of the torrent as a link.
-        /// </summary>
-        [JsonProperty("uri")]
-        public String Url { get; set; }
-    }
+    /// <summary>
+    ///     The URL of the torrent as a link.
+    /// </summary>
+    [JsonProperty("uri")]
+    public String Url { get; set; } = null!;
 }

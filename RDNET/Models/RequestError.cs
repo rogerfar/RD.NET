@@ -1,14 +1,12 @@
-﻿using System;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
-namespace RDNET
+namespace RDNET;
+
+internal class RequestError
 {
-    internal class RequestError
-    {
-        [JsonProperty("error")]
-        public String Error { get; set; }
+    [JsonProperty("error")]
+    public String? Error { get; set; }
 
-        [JsonProperty("error_code")]
-        public Int32? ErrorCode { get; set; }
-    }
+    [JsonProperty("error_code")]
+    public Int32? ErrorCode { get; set; }
 }

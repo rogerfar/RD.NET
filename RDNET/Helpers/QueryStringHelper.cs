@@ -1,35 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
+﻿using System.Collections.Specialized;
 using System.Web;
 
-namespace RDNET.Helpers
+namespace RDNET.Helpers;
+
+internal static class QueryStringHelper
 {
-    internal static class QueryStringHelper
+    internal static String ToQueryString(this NameValueCollection nameValueCollection)
     {
-        internal static String ToQueryString(this NameValueCollection nameValueCollection)
+        var list = new List<String>();
+
+        foreach (var key in nameValueCollection.AllKeys)
         {
-            var list = new List<String>();
+            var values = nameValueCollection.GetValues(key);
 
-            foreach (var key in nameValueCollection.AllKeys)
+            if (values != null)
             {
-                var values = nameValueCollection.GetValues(key);
-
-                if (values != null)
+                foreach (var value in values)
                 {
-                    foreach (var value in values)
-                    {
-                        list.Add($"{HttpUtility.UrlEncode(key)}={HttpUtility.UrlEncode(value)}");
-                    }
+                    list.Add($"{HttpUtility.UrlEncode(key)}={HttpUtility.UrlEncode(value)}");
                 }
             }
-
-            if (list.Count == 0)
-            {
-                return "";
-            }
-
-            return "?" + String.Join("&", list);
         }
+
+        if (list.Count == 0)
+        {
+            return "";
+        }
+
+        return "?" + String.Join("&", list);
     }
 }

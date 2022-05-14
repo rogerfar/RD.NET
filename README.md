@@ -14,6 +14,15 @@ var client = new RdNetClient();
 
 When no parameters are given in the constructor the default app ID is used for open source application.
 
+The client follows the documentation closely in naming and parameters:
+```
+var client = new RdNetClient();
+client.UseApiAuthentication("myapikey");
+
+// See https://api.real-debrid.com/
+await client.Unrestrict.CheckAsync("https://www.4shared.com/mp3/BilLPtwmea/file_example_MP3_5MG.html");
+```
+
 ## Authentication
 
 ### Api Token

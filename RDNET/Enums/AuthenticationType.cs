@@ -1,8 +1,7 @@
-﻿namespace RDNET.Enums
+﻿namespace RDNET.Enums;
+
+internal enum AuthenticationType
 {
-    internal enum AuthenticationType
-    {
-        Api,
-        OAuth2
-    }
+    Api,
+    OAuth2
 }
