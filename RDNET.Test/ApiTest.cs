@@ -2,37 +2,36 @@ using System;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace RDNET.Test
+namespace RDNET.Test;
+
+public class ApiTest
 {
-    public class ApiTest
+    [Fact]
+    public async Task DisableToken()
     {
-        [Fact]
-        public async Task DisableToken()
-        {
-            var client = new RdNetClient();
-            client.UseApiAuthentication(Setup.API_KEY);
+        var client = new RdNetClient();
+        client.UseApiAuthentication(Setup.API_KEY);
 
-            await client.Api.DisableTokenAsync();
-        }
+        await client.Api.DisableTokenAsync();
+    }
 
-        [Fact]
-        public async Task Time()
-        {
-            var client = new RdNetClient();
+    [Fact]
+    public async Task Time()
+    {
+        var client = new RdNetClient();
 
-            var result = await client.Api.GetTimeAsync();
+        var result = await client.Api.GetTimeAsync();
 
-            Assert.InRange(result, DateTime.MinValue, DateTime.MaxValue);
-        }
+        Assert.InRange(result, DateTime.MinValue, DateTime.MaxValue);
+    }
 
-        [Fact]
-        public async Task TimeIso()
-        {
-            var client = new RdNetClient();
+    [Fact]
+    public async Task TimeIso()
+    {
+        var client = new RdNetClient();
 
-            var result = await client.Api.GetIsoTimeAsync();
+        var result = await client.Api.GetIsoTimeAsync();
 
-            Assert.InRange(result, DateTimeOffset.MinValue, DateTimeOffset.MaxValue);
-        }
+        Assert.InRange(result, DateTimeOffset.MinValue, DateTimeOffset.MaxValue);
     }
 }

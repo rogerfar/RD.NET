@@ -1,4 +1,4 @@
-﻿namespace RDNET.Apis;
+﻿namespace RDNET;
 
 public class StreamingApi
 {

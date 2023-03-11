@@ -1,6 +1,4 @@
-﻿using RDNET.Enums;
-
-namespace RDNET.Apis;
+﻿namespace RDNET;
 
 internal class Store
 {

@@ -3,59 +3,58 @@ using System.IO;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace RDNET.Test
+namespace RDNET.Test;
+
+public class UserTest
 {
-    public class UserTest
+    [Fact]
+    public async Task User()
     {
-        [Fact]
-        public async Task User()
-        {
-            var client = new RdNetClient();
-            client.UseApiAuthentication(Setup.API_KEY);
+        var client = new RdNetClient();
+        client.UseApiAuthentication(Setup.API_KEY);
 
-            var result = await client.User.GetAsync();
+        var result = await client.User.GetAsync();
 
-            Assert.Matches("@", result.Email);
-        }
+        Assert.Matches("@", result.Email);
+    }
 
-        [Fact]
-        public async Task ConvertPoints()
-        {
-            var client = new RdNetClient();
-            client.UseApiAuthentication(Setup.API_KEY);
+    [Fact]
+    public async Task ConvertPoints()
+    {
+        var client = new RdNetClient();
+        client.UseApiAuthentication(Setup.API_KEY);
 
-            await client.User.ConvertPointsAsync();
-        }
+        await client.User.ConvertPointsAsync();
+    }
 
-        [Fact]
-        public async Task ChangePassword()
-        {
-            var client = new RdNetClient();
-            client.UseApiAuthentication(Setup.API_KEY);
+    [Fact]
+    public async Task ChangePassword()
+    {
+        var client = new RdNetClient();
+        client.UseApiAuthentication(Setup.API_KEY);
 
-            await client.User.ChangePasswordAsync();
-        }
+        await client.User.ChangePasswordAsync();
+    }
 
-        [Fact]
-        public async Task UploadAvatar()
-        {
-            var client = new RdNetClient();
-            client.UseApiAuthentication(Setup.API_KEY);
+    [Fact]
+    public async Task UploadAvatar()
+    {
+        var client = new RdNetClient();
+        client.UseApiAuthentication(Setup.API_KEY);
 
-            const String filePath = @"avatar.png";
+        const String filePath = @"avatar.png";
 
-            var file = await File.ReadAllBytesAsync(filePath);
+        var file = await File.ReadAllBytesAsync(filePath);
 
-            await client.User.UploadAvatar(file);
-        }
+        await client.User.UploadAvatar(file);
+    }
         
-        [Fact]
-        public async Task DeleteAvatar()
-        {
-            var client = new RdNetClient();
-            client.UseApiAuthentication(Setup.API_KEY);
+    [Fact]
+    public async Task DeleteAvatar()
+    {
+        var client = new RdNetClient();
+        client.UseApiAuthentication(Setup.API_KEY);
 
-            await client.User.DeleteAvatar();
-        }
+        await client.User.DeleteAvatar();
     }
 }

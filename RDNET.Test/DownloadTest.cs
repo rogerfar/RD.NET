@@ -1,50 +1,49 @@
 ﻿using System.Threading.Tasks;
 using Xunit;
 
-namespace RDNET.Test
+namespace RDNET.Test;
+
+public class DownloadTest
 {
-    public class DownloadTest
+    [Fact]
+    public async Task DownloadGetTotal()
     {
-        [Fact]
-        public async Task DownloadGetTotal()
-        {
-            var client = new RdNetClient();
-            client.UseApiAuthentication(Setup.API_KEY);
+        var client = new RdNetClient();
+        client.UseApiAuthentication(Setup.API_KEY);
 
-            var result = await client.Downloads.GetTotal();
+        var result = await client.Downloads.GetTotal();
 
-            Assert.Equal(24, result);
-        }
+        Assert.Equal(24, result);
+    }
 
-        [Fact]
-        public async Task DownloadByPage()
-        {
-            var client = new RdNetClient();
-            client.UseApiAuthentication(Setup.API_KEY);
+    [Fact]
+    public async Task DownloadByPage()
+    {
+        var client = new RdNetClient();
+        client.UseApiAuthentication(Setup.API_KEY);
 
-            var result = await client.Downloads.GetPageAsync(1, 2);
+        var result = await client.Downloads.GetPageAsync(1, 2);
 
-            Assert.Equal(2, result.Count);
-        }
+        Assert.Equal(2, result.Count);
+    }
 
-        [Fact]
-        public async Task DownloadByOffset()
-        {
-            var client = new RdNetClient();
-            client.UseApiAuthentication(Setup.API_KEY);
+    [Fact]
+    public async Task DownloadByOffset()
+    {
+        var client = new RdNetClient();
+        client.UseApiAuthentication(Setup.API_KEY);
 
-            var result = await client.Downloads.GetAsync(0, 4);
+        var result = await client.Downloads.GetAsync(0, 4);
 
-            Assert.Equal(4, result.Count);
-        }
+        Assert.Equal(4, result.Count);
+    }
 
-        [Fact]
-        public async Task Delete()
-        {
-            var client = new RdNetClient();
-            client.UseApiAuthentication(Setup.API_KEY);
+    [Fact]
+    public async Task Delete()
+    {
+        var client = new RdNetClient();
+        client.UseApiAuthentication(Setup.API_KEY);
 
-            await client.Downloads.DeleteAsync("JD762AXQTGYOU");
-        }
+        await client.Downloads.DeleteAsync("JD762AXQTGYOU");
     }
 }

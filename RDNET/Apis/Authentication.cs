@@ -1,7 +1,6 @@
 ﻿using System.Web;
-using RDNET.Exceptions;
 
-namespace RDNET.Apis;
+namespace RDNET;
 
 public class AuthenticationApi
 {

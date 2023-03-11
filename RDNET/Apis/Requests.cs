@@ -1,10 +1,8 @@
 ﻿using System.Net;
 using System.Text;
 using Newtonsoft.Json;
-using RDNET.Enums;
-using RDNET.Exceptions;
 
-namespace RDNET.Apis;
+namespace RDNET;
 
 internal class Requests
 {
@@ -152,14 +150,16 @@ internal class Requests
                                                      Boolean requireAuthentication,
                                                      CancellationToken cancellationToken)
     {
-        var result = await Request(Store.ApiUrl, url, header, requireAuthentication, RequestType.Get, null, cancellationToken);
-        return result.HeaderValue;
+        var (_, headerValue) = await Request(Store.ApiUrl, url, header, requireAuthentication, RequestType.Get, null, cancellationToken);
+
+        return headerValue;
     }
 
     public async Task<String?> GetRequestAsync(String url, Boolean requireAuthentication, CancellationToken cancellationToken)
     {
-        var result = await Request(Store.ApiUrl, url, null, requireAuthentication, RequestType.Get, null, cancellationToken);
-        return result.Text;
+        var (text, _) = await Request(Store.ApiUrl, url, null, requireAuthentication, RequestType.Get, null, cancellationToken);
+
+        return text;
     }
 
     public async Task<T> GetRequestAsync<T>(String url, Boolean requireAuthentication, CancellationToken cancellationToken)

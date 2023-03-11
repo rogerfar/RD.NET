@@ -1,4 +1,4 @@
-﻿namespace RDNET.Exceptions;
+﻿namespace RDNET;
 
 public class RealDebridException : Exception
 {

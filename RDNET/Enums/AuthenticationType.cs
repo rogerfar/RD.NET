@@ -1,4 +1,4 @@
-﻿namespace RDNET.Enums;
+﻿namespace RDNET;
 
 internal enum AuthenticationType
 {

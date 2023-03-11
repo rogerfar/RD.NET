@@ -1,7 +1,4 @@
-﻿using RDNET.Apis;
-using RDNET.Enums;
-
-namespace RDNET;
+﻿namespace RDNET;
 
 /// <summary>
 ///     The RdNetClient consumed the Real-Debrid.com API.

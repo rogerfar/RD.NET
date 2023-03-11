@@ -1,30 +1,29 @@
 ﻿using System.Threading.Tasks;
 using Xunit;
 
-namespace RDNET.Test
+namespace RDNET.Test;
+
+public class StreamingTest
 {
-    public class StreamingTest
+    [Fact]
+    public async Task Transcode()
     {
-        [Fact]
-        public async Task Transcode()
-        {
-            var client = new RdNetClient();
-            client.UseApiAuthentication(Setup.API_KEY);
+        var client = new RdNetClient();
+        client.UseApiAuthentication(Setup.API_KEY);
 
-            var result = await client.Streaming.GetTranscodeAsync("XFQVPHIWPXRZS");
+        var result = await client.Streaming.GetTranscodeAsync("XFQVPHIWPXRZS");
 
-            Assert.Equal(4, result.Count);
-        }
+        Assert.Equal(4, result.Count);
+    }
 
-        [Fact]
-        public async Task MediaInfo()
-        {
-            var client = new RdNetClient();
-            client.UseApiAuthentication(Setup.API_KEY);
+    [Fact]
+    public async Task MediaInfo()
+    {
+        var client = new RdNetClient();
+        client.UseApiAuthentication(Setup.API_KEY);
 
-            var result = await client.Streaming.GetMediaInfoAsync("XFQVPHIWPXRZS");
+        var result = await client.Streaming.GetMediaInfoAsync("XFQVPHIWPXRZS");
 
-            Assert.NotNull(result.Filename);
-        }
+        Assert.NotNull(result.Filename);
     }
 }

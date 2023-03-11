@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace RDNET.Apis;
+namespace RDNET;
 
 public class ApiApi
 {

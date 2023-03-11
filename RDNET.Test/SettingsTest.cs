@@ -1,28 +1,27 @@
 ﻿using System.Threading.Tasks;
 using Xunit;
 
-namespace RDNET.Test
+namespace RDNET.Test;
+
+public class SettingsTest
 {
-    public class SettingsTest
+    [Fact]
+    public async Task Settings()
     {
-        [Fact]
-        public async Task Settings()
-        {
-            var client = new RdNetClient();
-            client.UseApiAuthentication(Setup.API_KEY);
+        var client = new RdNetClient();
+        client.UseApiAuthentication(Setup.API_KEY);
 
-            var result = await client.Settings.GetAsync();
+        var result = await client.Settings.GetAsync();
 
-            Assert.Equal("secured", result.DownloadPort);
-        }
+        Assert.Equal("secured", result.DownloadPort);
+    }
 
-        [Fact]
-        public async Task Update()
-        {
-            var client = new RdNetClient();
-            client.UseApiAuthentication(Setup.API_KEY);
+    [Fact]
+    public async Task Update()
+    {
+        var client = new RdNetClient();
+        client.UseApiAuthentication(Setup.API_KEY);
 
-            await client.Settings.UpdateAsync("download_port", "secured");
-        }
+        await client.Settings.UpdateAsync("download_port", "secured");
     }
 }

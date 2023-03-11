@@ -1,11 +1,10 @@
 ﻿using System.Collections.Specialized;
 using Newtonsoft.Json;
-using RDNET.Helpers;
 using AvailableFiles = System.Collections.Generic.Dictionary<System.String, System.Collections.Generic.Dictionary<System.String,
     System.Collections.Generic.List<System.Collections.Generic.Dictionary<System.String, RDNET.TorrentInstantAvailabilityFile>>>>;
 using AvailableFiles2 = System.Collections.Generic.Dictionary<System.String, System.Collections.Generic.List<System.Collections.Generic.Dictionary<System.String, RDNET.TorrentInstantAvailabilityFile>>>;
 
-namespace RDNET.Apis;
+namespace RDNET;
 
 public class TorrentsApi
 {

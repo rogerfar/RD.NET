@@ -1,7 +1,6 @@
 ﻿using System.Collections.Specialized;
-using RDNET.Helpers;
 
-namespace RDNET.Apis;
+namespace RDNET;
 
 public class TrafficApi
 {

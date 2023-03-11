@@ -1,7 +1,7 @@
 ﻿using System.Collections.Specialized;
 using System.Web;
 
-namespace RDNET.Helpers;
+namespace RDNET;
 
 internal static class QueryStringHelper
 {

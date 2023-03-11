@@ -1,63 +1,62 @@
 ﻿using System.Threading.Tasks;
 using Xunit;
 
-namespace RDNET.Test
+namespace RDNET.Test;
+
+public class HostsTest
 {
-    public class HostsTest
+    [Fact]
+    public async Task Hosts()
     {
-        [Fact]
-        public async Task Hosts()
-        {
-            var client = new RdNetClient();
-            client.UseApiAuthentication(Setup.API_KEY);
+        var client = new RdNetClient();
+        client.UseApiAuthentication(Setup.API_KEY);
 
-            var result = await client.Hosts.GetAsync();
+        var result = await client.Hosts.GetAsync();
 
-            Assert.True(result.Count > 50);
-        }
+        Assert.True(result.Count > 50);
+    }
 
-        [Fact]
-        public async Task Status()
-        {
-            var client = new RdNetClient();
-            client.UseApiAuthentication(Setup.API_KEY);
+    [Fact]
+    public async Task Status()
+    {
+        var client = new RdNetClient();
+        client.UseApiAuthentication(Setup.API_KEY);
 
-            var result = await client.Hosts.GetStatusAsync();
+        var result = await client.Hosts.GetStatusAsync();
 
-            Assert.True(result.Count > 50);
-        }
+        Assert.True(result.Count > 50);
+    }
 
-        [Fact]
-        public async Task Regex()
-        {
-            var client = new RdNetClient();
-            client.UseApiAuthentication(Setup.API_KEY);
+    [Fact]
+    public async Task Regex()
+    {
+        var client = new RdNetClient();
+        client.UseApiAuthentication(Setup.API_KEY);
 
-            var result = await client.Hosts.GetRegexAsync();
+        var result = await client.Hosts.GetRegexAsync();
 
-            Assert.True(result.Count > 150);
-        }
+        Assert.True(result.Count > 150);
+    }
         
-        [Fact]
-        public async Task RegexFolder()
-        {
-            var client = new RdNetClient();
-            client.UseApiAuthentication(Setup.API_KEY);
+    [Fact]
+    public async Task RegexFolder()
+    {
+        var client = new RdNetClient();
+        client.UseApiAuthentication(Setup.API_KEY);
 
-            var result = await client.Hosts.GetRegexFolderAsync();
+        var result = await client.Hosts.GetRegexFolderAsync();
 
-            Assert.True(result.Count > 20);
-        }
+        Assert.True(result.Count > 20);
+    }
 
-        [Fact]
-        public async Task Domains()
-        {
-            var client = new RdNetClient();
-            client.UseApiAuthentication(Setup.API_KEY);
+    [Fact]
+    public async Task Domains()
+    {
+        var client = new RdNetClient();
+        client.UseApiAuthentication(Setup.API_KEY);
 
-            var result = await client.Hosts.GetDomainsAsync();
+        var result = await client.Hosts.GetDomainsAsync();
 
-            Assert.True(result.Count > 100);
-        }
+        Assert.True(result.Count > 100);
     }
 }
