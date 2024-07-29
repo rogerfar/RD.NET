@@ -8,31 +8,31 @@ public class Settings
     ///     Available "download_port" values.
     /// </summary>
     [JsonProperty("download_ports")]
-    public List<String> DownloadPorts { get; set; } = new List<String>();
+    public List<String> DownloadPorts { get; set; } = [];
 
     /// <summary>
     ///     Available "locale" values.
     /// </summary>
     [JsonProperty("locales")]
-    public Dictionary<String, String> Locales { get; set; } = new Dictionary<String, String>();
+    public Dictionary<String, String> Locales { get; set; } = [];
 
     /// <summary>
     ///     Available "streaming_quality" values.
     /// </summary>
     [JsonProperty("streaming_qualities")]
-    public List<String> StreamingQualities { get; set; } = new List<String>();
+    public List<String> StreamingQualities { get; set; } = [];
 
     /// <summary>
     ///     Available "streaming_language" values.
     /// </summary>
     [JsonProperty("streaming_languages")]
-    public Dictionary<String, String> StreamingLanguages { get; set; } = new Dictionary<String, String>();
+    public Dictionary<String, String> StreamingLanguages { get; set; } = [];
 
     /// <summary>
     ///     Audio on Google Cast devices setting.
     /// </summary>
     [JsonProperty("streaming_cast_audio")]
-    public List<String> StreamingCastAudio { get; set; } = new List<String>();
+    public List<String> StreamingCastAudio { get; set; } = [];
 
     /// <summary>
     ///     Download port setting

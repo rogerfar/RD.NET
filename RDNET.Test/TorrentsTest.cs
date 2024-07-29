@@ -26,7 +26,7 @@ public class TorrentsTest
 
         var result = await client.Torrents.GetAsync(0, 5);
 
-        Assert.Equal(1, result.Count);
+        Assert.Single(result);
     }
 
     [Fact]
@@ -37,7 +37,7 @@ public class TorrentsTest
 
         var result = await client.Torrents.GetByPageAsync(1, 5);
 
-        Assert.Equal(1, result.Count);
+        Assert.Single(result);
     }
 
     [Fact]
@@ -133,7 +133,7 @@ public class TorrentsTest
         var client = new RdNetClient();
         client.UseApiAuthentication(Setup.API_KEY);
 
-        await client.Torrents.SelectFilesAsync("KRMG55JOY3F7E", new []{ "1", "2" });
+        await client.Torrents.SelectFilesAsync("KRMG55JOY3F7E", ["1", "2"]);
     }
         
     [Fact]

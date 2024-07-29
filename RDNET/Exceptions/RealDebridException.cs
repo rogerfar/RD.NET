@@ -1,18 +1,10 @@
 ﻿namespace RDNET;
 
-public class RealDebridException : Exception
+public class RealDebridException(String? error, Int32? errorCode) : Exception(GetMessage(error, errorCode) ?? error)
 {
-    public RealDebridException(String? error, Int32? errorCode)
-        : base(GetMessage(error, errorCode) ?? error)
-    {
-        ServerError = error;
-        ErrorCode = errorCode;
-        Error = GetMessage(error, errorCode) ?? "Unknown error";
-    }
-
-    public String? ServerError { get; }
-    public Int32? ErrorCode { get; }
-    public String Error { get; }
+    public String? ServerError { get; } = error;
+    public Int32? ErrorCode { get; } = errorCode;
+    public String Error { get; } = GetMessage(error, errorCode) ?? "Unknown error";
 
     public static String? GetMessage(String? error, Int32? errorCode)
     {
@@ -53,6 +45,8 @@ public class RealDebridException : Exception
             32 => "Image resolution error",
             33 => "Torrent already active",
             34 => "Too many requests",
+            35 => "Infringing file",
+            36 => "Fair Usage Limit",
             _ => error
         };
     }

@@ -37,7 +37,7 @@ public class UnrestrictTest
 
         var result = await client.Unrestrict.FolderAsync("https://www.4shared.com/mp3/BilLPtwmea/file_example_MP3_5MG.html");
 
-        Assert.Equal(1, result.Count);
+        Assert.Single(result);
     }
         
     [Fact]
@@ -52,7 +52,7 @@ public class UnrestrictTest
 
         var result = await client.Unrestrict.ContainerFileAsync(fileContents);
 
-        Assert.Equal(1, result.Count);
+        Assert.Single(result);
         Assert.Equal("https://google.com", result[0]);
     }
         
@@ -64,7 +64,7 @@ public class UnrestrictTest
 
         var result = await client.Unrestrict.ContainerLinkAsync("https://filecrypt.co/Container/49D157238E.html");
 
-        Assert.Equal(1, result.Count);
+        Assert.Single(result);
         Assert.Equal("https://google.com", result[0]);
     }
 }

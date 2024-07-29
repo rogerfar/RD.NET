@@ -12,7 +12,7 @@ public class TorrentsApi
 
     internal TorrentsApi(HttpClient httpClient, Store store)
     {
-        _requests = new Requests(httpClient, store);
+        _requests = new(httpClient, store);
     }
 
     /// <summary>
@@ -154,7 +154,7 @@ public class TorrentsApi
         }
         catch
         {
-            return new AvailableFiles();
+            return [];
         }
     }
 

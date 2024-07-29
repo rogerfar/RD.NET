@@ -4,17 +4,8 @@ using Newtonsoft.Json;
 
 namespace RDNET;
 
-internal class Requests
+internal class Requests(HttpClient httpClient, Store store)
 {
-    private readonly HttpClient _httpClient;
-    private readonly Store _store;
-
-    public Requests(HttpClient httpClient, Store store)
-    {
-        _httpClient = httpClient;
-        _store = store;
-    }
-
     private async Task<(String? Text, String? HeaderValue)> Request(String baseUrl,
                                                                     String url, 
                                                                     String? headerOutput,
@@ -23,11 +14,11 @@ internal class Requests
                                                                     HttpContent? data,
                                                                     CancellationToken cancellationToken)
     {
-        _httpClient.DefaultRequestHeaders.Remove("Authorization");
+        httpClient.DefaultRequestHeaders.Remove("Authorization");
 
         if (requireAuthentication)
         {
-            _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {_store.BearerToken}");
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {store.BearerToken}");
         }
 
         var retryCount = 0;
@@ -37,17 +28,17 @@ internal class Requests
             {
                 var response = requestType switch
                 {
-                    RequestType.Get => await _httpClient.GetAsync($"{baseUrl}{url}", cancellationToken),
-                    RequestType.Post => await _httpClient.PostAsync($"{baseUrl}{url}", data, cancellationToken),
-                    RequestType.Put => await _httpClient.PutAsync($"{baseUrl}{url}", data, cancellationToken),
-                    RequestType.Delete => await _httpClient.DeleteAsync($"{baseUrl}{url}", cancellationToken),
+                    RequestType.Get => await httpClient.GetAsync($"{baseUrl}{url}", cancellationToken),
+                    RequestType.Post => await httpClient.PostAsync($"{baseUrl}{url}", data, cancellationToken),
+                    RequestType.Put => await httpClient.PutAsync($"{baseUrl}{url}", data, cancellationToken),
+                    RequestType.Delete => await httpClient.DeleteAsync($"{baseUrl}{url}", cancellationToken),
                     _ => throw new ArgumentOutOfRangeException(nameof(requestType), requestType, null)
                 };
 
                 var buffer = await response.Content.ReadAsByteArrayAsync();
                 var text = Encoding.UTF8.GetString(buffer, 0, buffer.Length);
 
-                if (response.StatusCode == HttpStatusCode.Unauthorized && requireAuthentication && _store.AuthenticationType == AuthenticationType.OAuth2)
+                if (response.StatusCode == HttpStatusCode.Unauthorized && requireAuthentication && store.AuthenticationType == AuthenticationType.OAuth2)
                 {
                     var realDebridException = ParseRealDebridException(text);
 
@@ -91,7 +82,7 @@ internal class Requests
             }
             catch
             {
-                if (retryCount >= _store.RetryCount)
+                if (retryCount >= store.RetryCount)
                 {
                     throw;
                 }
