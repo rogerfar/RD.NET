@@ -106,7 +106,7 @@ public class TorrentsTest
         var client = new RdNetClient();
         client.UseApiAuthentication(Setup.API_KEY);
 
-        var result = await client.Torrents.GetAvailableFiles("dd8255ecdc7ca55fb0bbf81323d87062db1f6d1c");
+        var result = await client.Torrents.GetAvailableFiles("137e55f28e395400393dd7f68f7ff5ed4d41000e");
     }
 
     [Fact]

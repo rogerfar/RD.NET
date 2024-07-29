@@ -11,7 +11,7 @@
     <RepositoryUrl>https://github.com/rogerfar/RD.NET</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
     <PackageTags>RealDebrid Real-Debrid</PackageTags>
-    <Version>2.1.5</Version>
+    <Version>2.1.6</Version>
     <AssemblyVersion>2.0.0.0</AssemblyVersion>
     <FileVersion>2.0.0.0</FileVersion>
     <Nullable>enable</Nullable>

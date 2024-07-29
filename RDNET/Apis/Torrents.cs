@@ -136,25 +136,70 @@ public class TorrentsApi
     /// <returns>List of files available.</returns>
     public async Task<AvailableFiles> GetAvailableFiles(String id, CancellationToken cancellationToken = default)
     {
+        var result = await _requests.GetRequestAsync($"torrents/instantAvailability/{id}", true, cancellationToken);
+
+        if (result == null)
+        {
+            return [];
+        }
+
         try
         {
-            return await _requests.GetRequestAsync<AvailableFiles>($"torrents/instantAvailability/{id}", true, cancellationToken);
+            return JsonConvert.DeserializeObject<AvailableFiles>(result) ?? throw new JsonSerializationException();
         }
         catch (JsonSerializationException)
         {
-            var result = await _requests.GetRequestAsync<AvailableFiles2>($"torrents/instantAvailability/{id}", true, cancellationToken);
+            try
+            {
+                var result2 = JsonConvert.DeserializeObject<AvailableFiles2>(result) ?? throw new JsonSerializationException();
 
-            return result.ToDictionary(r => r.Key,
-                                       r => new Dictionary<String, List<Dictionary<String, TorrentInstantAvailabilityFile>>>
-                                       {
-                                           {
-                                               "rd", r.Value
-                                           }
-                                       });
+                return result2.ToDictionary(r => r.Key,
+                                            r => new AvailableFiles2
+                                            {
+                                                {
+                                                    "rd", r.Value
+                                                }
+                                            });
+            }
+            catch (JsonSerializationException)
+            {
+                try
+                {
+                    var result2 = JsonConvert.DeserializeObject<List<String>>(result) ?? throw new JsonSerializationException();
+
+                    return result2.ToDictionary(r => r,
+                                                r => new AvailableFiles2
+                                                {
+                                                    {
+                                                        "rd", [
+                                                        new()
+                                                        {
+                                                            [r] = new()
+                                                            {
+                                                                Filename = r
+                                                            }
+                                                        }
+                                                        ]
+                                                    }
+                                                });
+                }
+                catch (JsonSerializationException ex)
+                {
+                    throw new JsonSerializationException($"Unable to deserialize Real Debrid API response to {typeof(AvailableFiles).Name}. Response was: {result}", ex);   
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception($"Unable to deserialize Real Debrid API response to {typeof(AvailableFiles).Name}. Response was: {result}", ex);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Unable to deserialize Real Debrid API response to {typeof(AvailableFiles).Name}. Response was: {result}", ex);
+            }
         }
-        catch
+        catch (Exception ex)
         {
-            return [];
+            throw new Exception($"Unable to deserialize Real Debrid API response to {typeof(AvailableFiles).Name}. Response was: {result}", ex);
         }
     }
 
