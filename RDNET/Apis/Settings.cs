@@ -1,14 +1,7 @@
 ﻿namespace RDNET;
 
-public class SettingsApi
+public interface ISettingsApi
 {
-    private readonly Requests _requests;
-
-    internal SettingsApi(HttpClient httpClient, Store store)
-    {
-        _requests = new Requests(httpClient, store);
-    }
-
     /// <summary>
     ///     Get current user settings with possible values to update.
     /// </summary>
@@ -17,10 +10,7 @@ public class SettingsApi
     ///     cancellation.
     /// </param>
     /// <returns>A list of settings.</returns>
-    public async Task<Settings> GetAsync(CancellationToken cancellationToken = default)
-    {
-        return await _requests.GetRequestAsync<Settings>("settings", true, cancellationToken);
-    }
+    Task<Settings> GetAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
     ///     Update a user setting
@@ -38,6 +28,25 @@ public class SettingsApi
     ///     A cancellation token that can be used by other objects or threads to receive notice of
     ///     cancellation.
     /// </param>
+    Task UpdateAsync(String settingName, String settingValue, CancellationToken cancellationToken = default);
+}
+
+public class SettingsApi : ISettingsApi
+{
+    private readonly Requests _requests;
+
+    internal SettingsApi(HttpClient httpClient, Store store)
+    {
+        _requests = new Requests(httpClient, store);
+    }
+
+    /// <inheritdoc />
+    public async Task<Settings> GetAsync(CancellationToken cancellationToken = default)
+    {
+        return await _requests.GetRequestAsync<Settings>("settings", true, cancellationToken);
+    }
+
+    /// <inheritdoc />
     public async Task UpdateAsync(String settingName, String settingValue, CancellationToken cancellationToken = default)
     {
         var data = new[]

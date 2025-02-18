@@ -2,15 +2,8 @@
 
 namespace RDNET;
 
-public class TrafficApi
+public interface ITrafficApi
 {
-    private readonly Requests _requests;
-
-    internal TrafficApi(HttpClient httpClient, Store store)
-    {
-        _requests = new Requests(httpClient, store);
-    }
-
     /// <summary>
     ///     Get traffic informations for limited hosters (limits, current usage, extra packages).
     /// </summary>
@@ -19,10 +12,7 @@ public class TrafficApi
     ///     cancellation.
     /// </param>
     /// <returns></returns>
-    public async Task<Dictionary<String, TrafficRemote>> GetAsync(CancellationToken cancellationToken = default)
-    {
-        return await _requests.GetRequestAsync<Dictionary<String, TrafficRemote>>("traffic", true, cancellationToken);
-    }
+    Task<Dictionary<String, TrafficRemote>> GetAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
     ///     Get traffic details on each hoster used during a defined period.
@@ -35,6 +25,25 @@ public class TrafficApi
     ///     cancellation.
     /// </param>
     /// <returns></returns>
+    Task<Dictionary<DateTime, TrafficDetail>> GetDetailsAsync(DateTime? start, DateTime? end, CancellationToken cancellationToken = default);
+}
+
+public class TrafficApi : ITrafficApi
+{
+    private readonly Requests _requests;
+
+    internal TrafficApi(HttpClient httpClient, Store store)
+    {
+        _requests = new Requests(httpClient, store);
+    }
+
+    /// <inheritdoc />
+    public async Task<Dictionary<String, TrafficRemote>> GetAsync(CancellationToken cancellationToken = default)
+    {
+        return await _requests.GetRequestAsync<Dictionary<String, TrafficRemote>>("traffic", true, cancellationToken);
+    }
+
+    /// <inheritdoc />
     public async Task<Dictionary<DateTime, TrafficDetail>> GetDetailsAsync(DateTime? start, DateTime? end, CancellationToken cancellationToken = default)
     {
         var parameters = new NameValueCollection();

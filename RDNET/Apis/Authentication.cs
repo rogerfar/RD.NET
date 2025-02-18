@@ -2,17 +2,8 @@
 
 namespace RDNET;
 
-public class AuthenticationApi
+public interface IAuthenticationApi
 {
-    private readonly Store _store;
-    private readonly Requests _requests;
-
-    internal AuthenticationApi(HttpClient httpClient, Store store)
-    {
-        _store = store;
-        _requests = new Requests(httpClient, store);
-    }
-
     /// <summary>
     ///     Get the URL to redirect the user to start with OAuth2 authentication.
     /// </summary>
@@ -28,12 +19,7 @@ public class AuthenticationApi
     ///     code: the code that you will use to get a token
     ///     state: the same value that you sent earlier
     /// </returns>
-    public String GetOAuthAuthorizationUrl(Uri redirectUri, String state)
-    {
-        var redirectUriEncoded = HttpUtility.UrlEncode(redirectUri.OriginalString);
-
-        return $"{Store.AuthUrl}auth?client_id={_store.AppId}&redirect_uri={redirectUriEncoded}&response_type=code&state={state}";
-    }
+    String GetOAuthAuthorizationUrl(Uri redirectUri, String state);
 
     /// <summary>
     ///     Using the received token from the user get the access tokens.
@@ -54,6 +40,56 @@ public class AuthenticationApi
     /// <returns>
     ///     The authentication tokens.
     /// </returns>
+    Task<AuthenticationToken> GetOAuthAuthorizationTokensAsync(String clientId, String clientSecret, String? code = null, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    ///     Get new authentication credentials by requesting the authenticate the user manually.
+    /// </summary>
+    /// <param name="cancellationToken">
+    ///     A cancellation token that can be used by other objects or threads to receive notice of
+    ///     cancellation.
+    /// </param>
+    /// <returns>
+    ///     An object with info how to have the user authenticate.
+    /// </returns>
+    Task<AuthenticationDevice> GetDeviceAuthorizeRequestAsync(CancellationToken cancellationToken = default);
+
+    /// <summary>
+    ///     Check if the user has verified its device.
+    ///     This method will throw an exception when the user has not verified the device yet.
+    /// </summary>
+    /// <param name="cancellationToken">
+    ///     A cancellation token that can be used by other objects or threads to receive notice of
+    ///     cancellation.
+    /// </param>
+    /// <returns>
+    ///     The authentication tokens or NULL when the user is not verified.
+    /// </returns>
+    Task<AuthenticationVerify?> VerifyDeviceAuthentication(CancellationToken cancellationToken = default);
+
+    Task<AuthenticationToken> RefreshTokenAsync(CancellationToken cancellationToken = default);
+}
+
+public class AuthenticationApi : IAuthenticationApi
+{
+    private readonly Store _store;
+    private readonly Requests _requests;
+
+    internal AuthenticationApi(HttpClient httpClient, Store store)
+    {
+        _store = store;
+        _requests = new Requests(httpClient, store);
+    }
+
+    /// <inheritdoc />
+    public String GetOAuthAuthorizationUrl(Uri redirectUri, String state)
+    {
+        var redirectUriEncoded = HttpUtility.UrlEncode(redirectUri.OriginalString);
+
+        return $"{Store.AuthUrl}auth?client_id={_store.AppId}&redirect_uri={redirectUriEncoded}&response_type=code&state={state}";
+    }
+
+    /// <inheritdoc />
     public async Task<AuthenticationToken> GetOAuthAuthorizationTokensAsync(String clientId, String clientSecret, String? code = null, CancellationToken cancellationToken = default)
     {
         var data = new[]
@@ -72,16 +108,7 @@ public class AuthenticationApi
         return result;
     }
 
-    /// <summary>
-    ///     Get new authentication credentials by requesting the authenticate the user manually.
-    /// </summary>
-    /// <param name="cancellationToken">
-    ///     A cancellation token that can be used by other objects or threads to receive notice of
-    ///     cancellation.
-    /// </param>
-    /// <returns>
-    ///     An object with info how to have the user authenticate.
-    /// </returns>
+    /// <inheritdoc />
     public async Task<AuthenticationDevice> GetDeviceAuthorizeRequestAsync(CancellationToken cancellationToken = default)
     {
         var result = await _requests.GetAuthRequestAsync<AuthenticationDevice>($"device/code?client_id={_store.AppId}&new_credentials=yes", cancellationToken);
@@ -94,17 +121,7 @@ public class AuthenticationApi
         return result;
     }
 
-    /// <summary>
-    ///     Check if the user has verified its device.
-    ///     This method will throw an exception when the user has not verified the device yet.
-    /// </summary>
-    /// <param name="cancellationToken">
-    ///     A cancellation token that can be used by other objects or threads to receive notice of
-    ///     cancellation.
-    /// </param>
-    /// <returns>
-    ///     The authentication tokens or NULL when the user is not verified.
-    /// </returns>
+    /// <inheritdoc />
     public async Task<AuthenticationVerify?> VerifyDeviceAuthentication(CancellationToken cancellationToken = default)
     {
         if (String.IsNullOrWhiteSpace(_store.DeviceCode))
