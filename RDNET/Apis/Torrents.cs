@@ -6,15 +6,8 @@ using AvailableFiles2 = System.Collections.Generic.Dictionary<System.String, Sys
 
 namespace RDNET;
 
-public class TorrentsApi
+public interface ITorrentsApi
 {
-    private readonly Requests _requests;
-
-    internal TorrentsApi(HttpClient httpClient, Store store)
-    {
-        _requests = new(httpClient, store);
-    }
-
     /// <summary>
     ///     Get the number of torrents.
     /// </summary>
@@ -23,17 +16,7 @@ public class TorrentsApi
     ///     cancellation.
     /// </param>
     /// <returns>The number of torrents.</returns>
-    public async Task<Int64> GetTotal(CancellationToken cancellationToken = default)
-    {
-        var result = await _requests.GetRequestHeaderAsync($"torrents?limit=1", "X-Total-Count", true, cancellationToken);
-
-        if (result == null)
-        {
-            return 0;
-        }
-
-        return Int64.Parse(result);
-    }
+    Task<Int64> GetTotal(CancellationToken cancellationToken = default);
 
     /// <summary>
     ///     Get user torrents list by offset.
@@ -46,6 +29,134 @@ public class TorrentsApi
     ///     cancellation.
     /// </param>
     /// <returns>List of torrents.</returns>
+    Task<IList<Torrent>> GetAsync(Int32? offset = null,
+                                  Int32? limit = null,
+                                  String? filter = null,
+                                  CancellationToken cancellationToken = default);
+
+    /// <summary>
+    ///     Get user torrents list by page.
+    /// </summary>
+    /// <param name="page">Pagination system</param>
+    /// <param name="limit">Entries returned per page / request (max 100, default: 50)</param>
+    /// <param name="filter">"active", list active torrents first</param>
+    /// <param name="cancellationToken">
+    ///     A cancellation token that can be used by other objects or threads to receive notice of
+    ///     cancellation.
+    /// </param>
+    /// <returns>List of torrents.</returns>
+    Task<IList<Torrent>> GetByPageAsync(Int32? page = null,
+                                        Int32? limit = null,
+                                        String? filter = null,
+                                        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    ///     Get information about the torrent.
+    /// </summary>
+    /// <param name="id">The ID of the torrent</param>
+    /// <param name="cancellationToken">
+    ///     A cancellation token that can be used by other objects or threads to receive notice of
+    ///     cancellation.
+    /// </param>
+    /// <returns>Info about the torrent.</returns>
+    Task<Torrent> GetInfoAsync(String id, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    ///     Get the files available on Real-Debrid for the given torrent.
+    /// </summary>
+    /// <param name="id">The ID of the torrent</param>
+    /// <param name="cancellationToken">
+    ///     A cancellation token that can be used by other objects or threads to receive notice of
+    ///     cancellation.
+    /// </param>
+    /// <returns>List of files available.</returns>
+    Task<AvailableFiles> GetAvailableFiles(String id, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    ///     Get currently active torrents number and the current maximum limit.
+    /// </summary>
+    /// <param name="cancellationToken">
+    ///     A cancellation token that can be used by other objects or threads to receive notice of
+    ///     cancellation.
+    /// </param>
+    /// <returns>Torrent limits and active count.</returns>
+    Task<TorrentActiveCount> GetActiveCountAsync(CancellationToken cancellationToken = default);
+
+    /// <summary>
+    ///     Get available hosts to upload the torrent to.
+    /// </summary>
+    /// <returns>List of available hosters.</returns>
+    Task<IList<TorrentHost>> GetAvailableHostsAsync(CancellationToken cancellationToken = default);
+
+    /// <summary>
+    ///     Add a torrent file to add to the torrent client.
+    /// </summary>
+    /// <param name="file">The byte array of the file.</param>
+    /// <param name="cancellationToken">
+    ///     A cancellation token that can be used by other objects or threads to receive notice of
+    ///     cancellation.
+    /// </param>
+    /// <returns>Info about the added torrent.</returns>
+    Task<TorrentAddResult> AddFileAsync(Byte[] file, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    ///     Add a magnet link to add to the torrent client.
+    /// </summary>
+    /// <param name="magnet">Magnet link</param>
+    /// <param name="cancellationToken">
+    ///     A cancellation token that can be used by other objects or threads to receive notice of
+    ///     cancellation.
+    /// </param>
+    /// <returns>Info about the added torrent.</returns>
+    Task<TorrentAddResult> AddMagnetAsync(String magnet, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    ///     Select files of a torrent to start the torrent.
+    /// </summary>
+    /// <param name="id">The ID of the torrent</param>
+    /// <param name="fileIds">Selected files IDs or "all"</param>
+    /// <param name="cancellationToken">
+    ///     A cancellation token that can be used by other objects or threads to receive notice of
+    ///     cancellation.
+    /// </param>
+    /// <returns></returns>
+    Task SelectFilesAsync(String id, String[] fileIds, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    ///     Delete a torrent from torrents list.
+    /// </summary>
+    /// <param name="id">The ID of the torrent</param>
+    /// <param name="cancellationToken">
+    ///     A cancellation token that can be used by other objects or threads to receive notice of
+    ///     cancellation.
+    /// </param>
+    /// <returns></returns>
+    Task DeleteAsync(String id, CancellationToken cancellationToken = default);
+}
+
+public class TorrentsApi : ITorrentsApi
+{
+    private readonly Requests _requests;
+
+    internal TorrentsApi(HttpClient httpClient, Store store)
+    {
+        _requests = new(httpClient, store);
+    }
+
+    /// <inheritdoc />
+    public async Task<Int64> GetTotal(CancellationToken cancellationToken = default)
+    {
+        var result = await _requests.GetRequestHeaderAsync($"torrents?limit=1", "X-Total-Count", true, cancellationToken);
+
+        if (result == null)
+        {
+            return 0;
+        }
+
+        return Int64.Parse(result);
+    }
+
+    /// <inheritdoc />
     public async Task<IList<Torrent>> GetAsync(Int32? offset = null,
                                                Int32? limit = null,
                                                String? filter = null,
@@ -73,17 +184,7 @@ public class TorrentsApi
         return list;
     }
         
-    /// <summary>
-    ///     Get user torrents list by page.
-    /// </summary>
-    /// <param name="page">Pagination system</param>
-    /// <param name="limit">Entries returned per page / request (max 100, default: 50)</param>
-    /// <param name="filter">"active", list active torrents first</param>
-    /// <param name="cancellationToken">
-    ///     A cancellation token that can be used by other objects or threads to receive notice of
-    ///     cancellation.
-    /// </param>
-    /// <returns>List of torrents.</returns>
+    /// <inheritdoc />
     public async Task<IList<Torrent>> GetByPageAsync(Int32? page = null,
                                                      Int32? limit = null,
                                                      String? filter = null,
@@ -111,29 +212,13 @@ public class TorrentsApi
         return list;
     }
 
-    /// <summary>
-    ///     Get information about the torrent.
-    /// </summary>
-    /// <param name="id">The ID of the torrent</param>
-    /// <param name="cancellationToken">
-    ///     A cancellation token that can be used by other objects or threads to receive notice of
-    ///     cancellation.
-    /// </param>
-    /// <returns>Info about the torrent.</returns>
+    /// <inheritdoc />
     public async Task<Torrent> GetInfoAsync(String id, CancellationToken cancellationToken = default)
     {
         return await _requests.GetRequestAsync<Torrent>($"torrents/info/{id}", true, cancellationToken);
     }
 
-    /// <summary>
-    ///     Get the files available on Real-Debrid for the given torrent.
-    /// </summary>
-    /// <param name="id">The ID of the torrent</param>
-    /// <param name="cancellationToken">
-    ///     A cancellation token that can be used by other objects or threads to receive notice of
-    ///     cancellation.
-    /// </param>
-    /// <returns>List of files available.</returns>
+    /// <inheritdoc />
     public async Task<AvailableFiles> GetAvailableFiles(String id, CancellationToken cancellationToken = default)
     {
         var result = await _requests.GetRequestAsync($"torrents/instantAvailability/{id}", true, cancellationToken);
@@ -203,51 +288,25 @@ public class TorrentsApi
         }
     }
 
-    /// <summary>
-    ///     Get currently active torrents number and the current maximum limit.
-    /// </summary>
-    /// <param name="cancellationToken">
-    ///     A cancellation token that can be used by other objects or threads to receive notice of
-    ///     cancellation.
-    /// </param>
-    /// <returns>Torrent limits and active count.</returns>
+    /// <inheritdoc />
     public async Task<TorrentActiveCount> GetActiveCountAsync(CancellationToken cancellationToken = default)
     {
         return await _requests.GetRequestAsync<TorrentActiveCount>("torrents/activeCount", true, cancellationToken);
     }
 
-    /// <summary>
-    ///     Get available hosts to upload the torrent to.
-    /// </summary>
-    /// <returns>List of available hosters.</returns>
+    /// <inheritdoc />
     public async Task<IList<TorrentHost>> GetAvailableHostsAsync(CancellationToken cancellationToken = default)
     {
         return await _requests.GetRequestAsync<List<TorrentHost>>("torrents/availableHosts", true, cancellationToken);
     }
 
-    /// <summary>
-    ///     Add a torrent file to add to the torrent client.
-    /// </summary>
-    /// <param name="file">The byte array of the file.</param>
-    /// <param name="cancellationToken">
-    ///     A cancellation token that can be used by other objects or threads to receive notice of
-    ///     cancellation.
-    /// </param>
-    /// <returns>Info about the added torrent.</returns>
+    /// <inheritdoc />
     public async Task<TorrentAddResult> AddFileAsync(Byte[] file, CancellationToken cancellationToken = default)
     {
         return await _requests.PutRequestAsync<TorrentAddResult>("torrents/addTorrent", file, true, cancellationToken);
     }
 
-    /// <summary>
-    ///     Add a magnet link to add to the torrent client.
-    /// </summary>
-    /// <param name="magnet">Magnet link</param>
-    /// <param name="cancellationToken">
-    ///     A cancellation token that can be used by other objects or threads to receive notice of
-    ///     cancellation.
-    /// </param>
-    /// <returns>Info about the added torrent.</returns>
+    /// <inheritdoc />
     public async Task<TorrentAddResult> AddMagnetAsync(String magnet, CancellationToken cancellationToken = default)
     {
         var data = new[]
@@ -258,16 +317,7 @@ public class TorrentsApi
         return await _requests.PostRequestAsync<TorrentAddResult>("torrents/addMagnet", data, true, cancellationToken);
     }
 
-    /// <summary>
-    ///     Select files of a torrent to start the torrent.
-    /// </summary>
-    /// <param name="id">The ID of the torrent</param>
-    /// <param name="fileIds">Selected files IDs or "all"</param>
-    /// <param name="cancellationToken">
-    ///     A cancellation token that can be used by other objects or threads to receive notice of
-    ///     cancellation.
-    /// </param>
-    /// <returns></returns>
+    /// <inheritdoc />
     public async Task SelectFilesAsync(String id, String[] fileIds, CancellationToken cancellationToken = default)
     {
         var files = String.Join(",", fileIds);
@@ -280,15 +330,7 @@ public class TorrentsApi
         await _requests.PostRequestAsync($"torrents/selectFiles/{id}", data, true, cancellationToken);
     }
 
-    /// <summary>
-    ///     Delete a torrent from torrents list.
-    /// </summary>
-    /// <param name="id">The ID of the torrent</param>
-    /// <param name="cancellationToken">
-    ///     A cancellation token that can be used by other objects or threads to receive notice of
-    ///     cancellation.
-    /// </param>
-    /// <returns></returns>
+    /// <inheritdoc />
     public async Task DeleteAsync(String id, CancellationToken cancellationToken = default)
     {
         await _requests.DeleteRequestAsync($"torrents/delete/{id}", true, cancellationToken);
