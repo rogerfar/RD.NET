@@ -2,8 +2,9 @@
 
 internal class Store
 {
-    public const String AuthUrl = "https://api.real-debrid.com/oauth/v2/";
-    public const String ApiUrl = "https://api.real-debrid.com/rest/1.0/";
+    public String ApiHostname { get; set; } = "api.real-debrid.com";
+    public String AuthUrl => $"https://{ApiHostname}/oauth/v2/";
+    public String ApiUrl => $"https://{ApiHostname}/rest/1.0/";
 
     public String? AppId;
     public Int32 RetryCount { get; set; }

@@ -70,7 +70,7 @@ public class RdNetClient : IRdNetClient
     public ITrafficApi Traffic { get; }
     public IUnrestrictApi Unrestrict { get; }
     public IUserApi User { get; }
-        
+
     /// <summary>
     ///     Initialize the RdNet API.
     ///     To use authentication make sure to call either UseApiAuthentication for Api Key authentication
@@ -86,10 +86,19 @@ public class RdNetClient : IRdNetClient
     /// <param name="retryCount">
     ///     The API will retry this many times before failing.
     /// </param>
-    public RdNetClient(String? appId = null, HttpClient? httpClient = null, Int32 retryCount = 1)
+    /// <param name="apiHostname">
+    ///     Optional alternate hostname to use for the api base.
+    ///     Useful if the normal hostname <c>api.real-debrid.com</c> is blocked in your region
+    /// </param>
+    public RdNetClient(String? appId = null, HttpClient? httpClient = null, Int32 retryCount = 1, String? apiHostname = null)
     {
         _store.AppId= appId ?? "X245A4XAIBGVM";
         _store.RetryCount = retryCount;
+
+        if (apiHostname != null)
+        {
+            _store.ApiHostname = apiHostname;
+        }
 
         var client = httpClient ?? new HttpClient();
 
