@@ -86,7 +86,7 @@ public class AuthenticationApi : IAuthenticationApi
     {
         var redirectUriEncoded = HttpUtility.UrlEncode(redirectUri.OriginalString);
 
-        return $"{Store.AuthUrl}auth?client_id={_store.AppId}&redirect_uri={redirectUriEncoded}&response_type=code&state={state}";
+        return $"{_store.AuthUrl}auth?client_id={_store.AppId}&redirect_uri={redirectUriEncoded}&response_type=code&state={state}";
     }
 
     /// <inheritdoc />

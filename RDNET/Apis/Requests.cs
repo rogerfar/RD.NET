@@ -126,14 +126,14 @@ internal class Requests(HttpClient httpClient, Store store)
     public async Task<T> GetAuthRequestAsync<T>(String url, CancellationToken cancellationToken)
         where T : class, new()
     {
-        return await Request<T>(Store.AuthUrl, url, false, RequestType.Get, null, cancellationToken);
+        return await Request<T>(store.AuthUrl, url, false, RequestType.Get, null, cancellationToken);
     }
 
     public async Task<T> PostAuthRequestAsync<T>(String url, IEnumerable<KeyValuePair<String, String?>> data, CancellationToken cancellationToken)
         where T : class, new()
     {
         var content = new FormUrlEncodedContent(data);
-        return await Request<T>(Store.AuthUrl, url, false, RequestType.Post, content, cancellationToken);
+        return await Request<T>(store.AuthUrl, url, false, RequestType.Post, content, cancellationToken);
     }
 
     public async Task<String?> GetRequestHeaderAsync(String url,
@@ -141,14 +141,14 @@ internal class Requests(HttpClient httpClient, Store store)
                                                      Boolean requireAuthentication,
                                                      CancellationToken cancellationToken)
     {
-        var (_, headerValue) = await Request(Store.ApiUrl, url, header, requireAuthentication, RequestType.Get, null, cancellationToken);
+        var (_, headerValue) = await Request(store.ApiUrl, url, header, requireAuthentication, RequestType.Get, null, cancellationToken);
 
         return headerValue;
     }
 
     public async Task<String?> GetRequestAsync(String url, Boolean requireAuthentication, CancellationToken cancellationToken)
     {
-        var (text, _) = await Request(Store.ApiUrl, url, null, requireAuthentication, RequestType.Get, null, cancellationToken);
+        var (text, _) = await Request(store.ApiUrl, url, null, requireAuthentication, RequestType.Get, null, cancellationToken);
 
         return text;
     }
@@ -156,38 +156,38 @@ internal class Requests(HttpClient httpClient, Store store)
     public async Task<T> GetRequestAsync<T>(String url, Boolean requireAuthentication, CancellationToken cancellationToken)
         where T : class, new()
     {
-        return await Request<T>(Store.ApiUrl, url, requireAuthentication, RequestType.Get, null, cancellationToken);
+        return await Request<T>(store.ApiUrl, url, requireAuthentication, RequestType.Get, null, cancellationToken);
     }
 
     public async Task PostRequestAsync(String url, IEnumerable<KeyValuePair<String, String?>>? data, Boolean requireAuthentication, CancellationToken cancellationToken)
     {
         var content = data != null ? new FormUrlEncodedContent(data) : null;
-        await Request(Store.ApiUrl, url, null, requireAuthentication, RequestType.Post, content, cancellationToken);
+        await Request(store.ApiUrl, url, null, requireAuthentication, RequestType.Post, content, cancellationToken);
     }
 
     public async Task<T> PostRequestAsync<T>(String url, IEnumerable<KeyValuePair<String, String?>>? data, Boolean requireAuthentication, CancellationToken cancellationToken)
         where T : class, new()
     {
         var content = data != null ? new FormUrlEncodedContent(data) : null;
-        return await Request<T>(Store.ApiUrl, url, requireAuthentication, RequestType.Post, content, cancellationToken);
+        return await Request<T>(store.ApiUrl, url, requireAuthentication, RequestType.Post, content, cancellationToken);
     }
 
     public async Task PutRequestAsync(String url, Byte[] file, Boolean requireAuthentication, CancellationToken cancellationToken)
     {
         var content = new ByteArrayContent(file);
-        await Request(Store.ApiUrl, url, null, requireAuthentication, RequestType.Put, content, cancellationToken);
+        await Request(store.ApiUrl, url, null, requireAuthentication, RequestType.Put, content, cancellationToken);
     }
 
     public async Task<T> PutRequestAsync<T>(String url, Byte[] file, Boolean requireAuthentication, CancellationToken cancellationToken)
         where T : class, new()
     {
         var content = new ByteArrayContent(file);
-        return await Request<T>(Store.ApiUrl, url, requireAuthentication, RequestType.Put, content, cancellationToken);
+        return await Request<T>(store.ApiUrl, url, requireAuthentication, RequestType.Put, content, cancellationToken);
     }
 
     public async Task DeleteRequestAsync(String url, Boolean requireAuthentication, CancellationToken cancellationToken)
     {
-        await Request(Store.ApiUrl, url, null, requireAuthentication, RequestType.Delete, null, cancellationToken);
+        await Request(store.ApiUrl, url, null, requireAuthentication, RequestType.Delete, null, cancellationToken);
     }
 
     private enum RequestType
