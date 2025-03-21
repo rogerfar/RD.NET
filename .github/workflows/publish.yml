@@ -44,10 +44,10 @@ jobs:
         run: dotnet restore RDNET/RDNET.csproj
 
       - name: Build
-        run: dotnet build RDNET/RDNET.csproj -c Release --no-restore -p:Version=${{ env.NEXT_VERSION }}
+        run: dotnet build RDNET/RDNET.csproj -c Release --no-restore -p:Version=${{ env.NEXT_VERSION }} -p:AssemblyVersion=${{ env.NEXT_VERSION }}
 
       - name: Pack NuGet package
-        run: dotnet pack RDNET/RDNET.csproj -c Release --no-build -p:Version=${{ env.NEXT_VERSION }}
+        run: dotnet pack RDNET/RDNET.csproj -c Release --no-build -p:Version=${{ env.NEXT_VERSION }} -p:AssemblyVersion=${{ env.NEXT_VERSION }}
 
       - name: Push to NuGet
         run: dotnet nuget push RDNET/bin/Release/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
