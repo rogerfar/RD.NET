@@ -7,25 +7,33 @@ on:
 
 jobs:
   build-and-publish:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Increment latest version tag
+        shell: pwsh
         run: |
           git fetch --tags
-          $tags = git tag --sort=-v:refname | Where-Object { $_ -match '^\d+\.\d+\.\d+\.\d+$' }
-          $latestTag = $tags -split '\n' | Select-Object -First 1
-          $versionNumbers = $latestTag -split '\.'
-          $versionNumbers[-1] = [string]([int]$versionNumbers[-1] + 1)
-          $newVersion = $versionNumbers -join '.'
-          Write-Output "New incremented version is $newVersion"
+          $tags = git tag --sort=-v:refname | Where-Object { $_ -match '^\d+\.\d+\.\d+$' }
+      
+          $latestTag = $tags | Select-Object -First 1
+          $versionParts = $latestTag -split '\.'
+          if ($versionParts.Length -ne 3) {
+            Write-Error "Latest tag format is invalid: $latestTag"
+            exit 1
+          }
+          $versionParts[2] = [string]([int]$versionParts[2] + 1)
+          $newVersion = $versionParts -join '.'
+      
           echo "NEXT_VERSION=$newVersion" | Out-File -Append -FilePath $Env:GITHUB_ENV
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
           git tag $newVersion
           git push origin $newVersion
-        shell: pwsh
+          Write-Output "Created and pushed new tag: $newVersion"
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
